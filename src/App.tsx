@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { initializeSession } from "./store/authSlice";
 import { AppDispatch } from "./store/store";
-import LogInForm from "./components/Forms/loginForm";
+import LogInForm from "./components/Forms/LoginForm";
 import ModalWindow from "./components/ModalWindow";
 import "./App.css";
 
