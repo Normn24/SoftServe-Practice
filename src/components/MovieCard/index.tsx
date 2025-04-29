@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Session } from "../../types/authTypes";
 import { IoTicket } from "react-icons/io5";
+import YouTube from "react-youtube";
+import { NavLink } from "react-router-dom";
 
 interface MovieCardProps {
+  movieId: number;
   title: string;
   description: string;
   posterPath: string;
@@ -11,9 +14,12 @@ interface MovieCardProps {
   genre: string;
   duration: number;
   sessions: Session[];
+  isActive: boolean;
+  videos: { key: string; type: string; site: string };
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({
+  // movieId,
   title,
   description,
   posterPath,
@@ -22,12 +28,15 @@ const MovieCard: React.FC<MovieCardProps> = ({
   genre,
   duration,
   sessions,
+  isActive,
+  videos,
 }) => {
+  const [showTrailer, setShowTrailer] = useState(false);
+
   const today = new Date();
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
 
-  // Групуємо сеанси за датами
   const todaySessions = sessions.filter(
     (session) =>
       new Date(session.dateTime).toDateString() === today.toDateString()
@@ -89,25 +98,33 @@ const MovieCard: React.FC<MovieCardProps> = ({
     }
   }
 
-  return (
-    <div className="relative w-full h-screen bg-black text-white overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-30"
-        style={{
-          backgroundImage: `url(https://image.tmdb.org/t/p/original${posterPath})`,
-        }}
-      />
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (isActive) {
+      timer = setTimeout(() => {
+        setShowTrailer(true);
+      }, 5000);
+    } else {
+      setShowTrailer(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isActive]);
 
+  return (
+    <div className="relative w-full h-screen bg-black text-white overflow-hidden shadow-[0px_0px_800px_250px_rgba(0,_0,_0,_1)]">
       <div className="relative z-10 flex justify-between items-end h-full px-8 py-12">
         <div className="max-w-3xl">
           <h1 className="text-6xl font-bold mb-4">{title}</h1>
           <p className="text-lg mb-6 opacity-80">{description}</p>
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-black py-4 px-6 rounded-full transition font-bold text-xl flex items-center gap-2">
+          <NavLink
+            to="/"
+            className="w-max bg-yellow-400 hover:bg-yellow-500 text-black py-4 px-6 rounded-full transition font-bold text-xl flex items-center gap-2"
+          >
             <IoTicket style={{ width: "30px", height: "30px" }} />
             Select sessions
-          </button>
+          </NavLink>
         </div>
-        <div className="flex flex-col gap-4 max-w-[340px] items-end">
+        <div className="flex flex-col gap-4 max-w-[360px] items-end">
           <div className="flex items-center gap-6 mt-6 justify-end">
             {sessionLabel ? (
               <div className="mt-6 flex flex-col gap-2 text-sm opacity-80 ">
@@ -132,10 +149,39 @@ const MovieCard: React.FC<MovieCardProps> = ({
           <div className="flex flex-wrap gap-4 text-md opacity-80 justify-end">
             <span>{imdb.toFixed(1)} IMDB</span>•<span>{year}</span>•
             <span>{genre}</span>•<span>{duration} min.</span>
+          </div>
+          <div className="flex flex-wrap gap-4 text-md opacity-80 justify-end">
             <span>2D</span>•<span>Cinetech+</span>
           </div>
         </div>
       </div>
+      {showTrailer && videos && typeof videos.key === "string" ? (
+        <div className="absolute inset-0 z-0 ">
+          <YouTube
+            videoId={videos.key}
+            opts={{
+              width: "100%",
+              height: "100%",
+              playerVars: {
+                autoplay: 1,
+                controls: 0,
+                rel: 0,
+                showinfo: 0,
+                mute: 1,
+                loop: 1,
+              },
+            }}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ) : (
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-70"
+          style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/original${posterPath})`,
+          }}
+        />
+      )}
     </div>
   );
 };

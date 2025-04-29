@@ -98,6 +98,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state) => {
         state.error = null;
+        state.status = StatusEnum.FULFILLED;
       })
       .addCase(registerUser.rejected, (state, { payload }) => {
         state.error = payload || null;

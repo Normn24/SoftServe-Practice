@@ -1,19 +1,14 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { login, clearToken, initializeSession } from "../../store/authSlice";
+import { clearToken, registerUser } from "../../store/authSlice";
 import { AppDispatch, RootState } from "../../store/store";
-import { AuthFormProps, LoginPayload } from "../../types/authTypes";
-import { logInValidationSchema } from "../../validation/validationSchemas";
+import { AuthFormProps, RegisterPayload } from "../../types/authTypes";
+import { registrationValidationSchema } from "../../validation/validationSchemas";
 import { initialValuesTemp } from "../../validation/initialValuesTemp";
 
-function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
+function SignupForm({ onLoginClick }: AuthFormProps) {
   const dispatch = useDispatch<AppDispatch>();
   const { error } = useSelector((state: RootState) => state.auth);
-
-  useEffect(() => {
-    dispatch(initializeSession());
-  }, [dispatch]);
 
   const handleClearError = () => {
     dispatch(clearToken());
@@ -23,15 +18,15 @@ function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
     <div className="flex items-center justify-center">
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-420 max-w-md">
         <h2 className="text-center text-2xl font-bold text-gray-700 mb-6">
-          Log in
+          Sign up
         </h2>
         <Formik
-          initialValues={initialValuesTemp.login}
-          validationSchema={logInValidationSchema}
-          onSubmit={async (values: LoginPayload) => {
-            await dispatch(login(values)).then((response) => {
+          initialValues={initialValuesTemp.registration}
+          validationSchema={registrationValidationSchema}
+          onSubmit={async (values: RegisterPayload) => {
+            await dispatch(registerUser(values)).then((response) => {
               if (response.meta.requestStatus === "fulfilled") {
-                handleClose();
+                onLoginClick?.();
               }
             });
           }}
@@ -41,19 +36,19 @@ function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
               <div className="mb-4">
                 <label
                   className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="loginOrEmail"
+                  htmlFor="email"
                 >
                   Email
                 </label>
                 <Field
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="loginOrEmail"
+                  id="email"
                   type="text"
                   placeholder="Enter you email"
-                  name="loginOrEmail"
+                  name="email"
                 />
                 <ErrorMessage
-                  name="loginOrEmail"
+                  name="email"
                   component="div"
                   className="text-red-500 text-xs italic"
                 />
@@ -83,14 +78,8 @@ function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
                   className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   type="submit"
                 >
-                  Log in
+                  Sign up
                 </button>
-                <a
-                  className="inline-block align-baseline font-semibold text-sm text-indigo-500 hover:text-indigo-800"
-                  href="/forgot-password"
-                >
-                  Forgot your password
-                </a>
               </div>
             </Form>
           )}
@@ -123,12 +112,12 @@ function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
           </div>
         )}
         <p className="text-center text-gray-500 text-xs mt-4">
-          Don`t have an account?{" "}
+          Already have an account?{" "}
           <button
-            onClick={onSignUpClick}
+            onClick={onLoginClick}
             className="font-semibold text-indigo-500 hover:text-indigo-800"
           >
-            Sign Up?
+            Log in?
           </button>
         </p>
       </div>
@@ -136,4 +125,4 @@ function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
   );
 }
 
-export default LoginForm;
+export default SignupForm;

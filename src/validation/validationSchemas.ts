@@ -27,6 +27,6 @@ export const logInValidationSchema = () =>
 
 export const registrationValidationSchema = () =>
   Yup.object().shape({
-    loginOrEmail: getEmailField(),
+    email: getEmailField(),
     password: getPasswordField(),
   });

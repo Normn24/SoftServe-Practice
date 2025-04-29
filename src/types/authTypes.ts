@@ -23,14 +23,19 @@ export interface LoginPayload {
 }
 
 export interface RegisterPayload {
-  loginOrEmail: string;
+  email: string;
   password: string;
 }
 
 export interface Session {
   dateTime: string;
   price: number;
-  seats: any[];
+  seats: Seat[];
+}
+
+export interface Seat {
+  seatNumber: number;
+  isBooked: boolean;
 }
 
 export interface Movie {
@@ -45,5 +50,6 @@ export interface Movie {
     vote_average: number;
     runtime: number;
     genres: { id: number; name: string }[];
+    videos: { key: string; type: string; site: string };
   };
 }
