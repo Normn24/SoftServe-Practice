@@ -79,14 +79,14 @@ function LoginForm({ handleClose }: AuthFormProps) {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <button
-                  className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                <a
+                  className="bg-black hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   type="submit"
                 >
                   Log in
-                </button>
+                </a>
                 <a
-                  className="inline-block align-baseline font-semibold text-sm text-indigo-500 hover:text-indigo-800"
+                  className="inline-block align-baseline font-semibold text-sm  hover:text-indigo-800"
                   href="/forgot-password"
                 >
                   Forgot your password
