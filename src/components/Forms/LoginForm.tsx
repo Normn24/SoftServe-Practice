@@ -21,10 +21,8 @@ function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
 
   return (
     <div className="flex items-center justify-center">
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-420 max-w-md">
-        <h2 className="text-center text-2xl font-bold text-gray-700 mb-6">
-          Log in
-        </h2>
+      <div className="bg-[#2b2f31]  shadow-md rounded px-8 pt-6 pb-8 mb-4 w-420 max-w-md text-white">
+        <h2 className="text-center text-2xl font-bold mb-6">Log in</h2>
         <Formik
           initialValues={initialValuesTemp.login}
           validationSchema={logInValidationSchema}
@@ -40,13 +38,13 @@ function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
             <Form>
               <div className="mb-4">
                 <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
+                  className="block  text-sm font-bold mb-2"
                   htmlFor="loginOrEmail"
                 >
                   Email
                 </label>
                 <Field
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
                   id="loginOrEmail"
                   type="text"
                   placeholder="Enter you email"
@@ -55,18 +53,18 @@ function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
                 <ErrorMessage
                   name="loginOrEmail"
                   component="div"
-                  className="text-red-500 text-xs italic"
+                  className="text-red-500 text-s text-center"
                 />
               </div>
               <div className="mb-6">
                 <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
+                  className="block  text-sm font-bold mb-2"
                   htmlFor="password"
                 >
                   Password
                 </label>
                 <Field
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
                   id="password"
                   type="password"
                   placeholder="Enter your password"
@@ -75,18 +73,18 @@ function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
                 <ErrorMessage
                   name="password"
                   component="div"
-                  className="text-red-500 text-xs italic"
+                  className="text-red-500 text-s text-center"
                 />
               </div>
               <div className="flex items-center justify-between">
                 <button
-                  className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   type="submit"
                 >
                   Log in
                 </button>
                 <a
-                  className="inline-block align-baseline font-semibold text-sm text-indigo-500 hover:text-indigo-800"
+                  className="inline-block align-baseline font-semibold text-sm text-indigo-500 hover:text-indigo-600"
                   href="/forgot-password"
                 >
                   Forgot your password
@@ -122,11 +120,11 @@ function LoginForm({ handleClose, onSignUpClick }: AuthFormProps) {
             </span>
           </div>
         )}
-        <p className="text-center text-gray-500 text-xs mt-4">
+        <p className="text-center text-gray-400 text-xs mt-4">
           Don`t have an account?{" "}
           <button
             onClick={onSignUpClick}
-            className="font-semibold text-indigo-500 hover:text-indigo-800"
+            className="font-semibold text-yellow-400 hover:text-yellow-500"
           >
             Sign Up?
           </button>

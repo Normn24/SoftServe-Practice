@@ -111,8 +111,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
   }, [isActive]);
 
   return (
-    <div className="relative w-full h-screen bg-black text-white overflow-hidden shadow-[0px_0px_800px_250px_rgba(0,_0,_0,_1)]">
-      <div className="relative z-10 flex justify-between items-end h-full px-8 py-12">
+    <div className="relative w-full h-screen bg-black text-white overflow-hidden">
+      <div className="relative z-10 flex justify-between items-end h-full px-8 py-12 bg-gradient-to-t from-[#000] to-transparent">
         <div className="max-w-3xl">
           <h1 className="text-6xl font-bold mb-4">{title}</h1>
           <p className="text-lg mb-6 opacity-80">{description}</p>
@@ -162,6 +162,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
             opts={{
               width: "100%",
               height: "100%",
+              margin: "-50px",
               playerVars: {
                 autoplay: 1,
                 controls: 0,
@@ -169,6 +170,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
                 showinfo: 0,
                 mute: 1,
                 loop: 1,
+                cc_load_policy: 0,
+                iv_load_policy: 3,
               },
             }}
             className="w-full h-full object-cover"
@@ -176,7 +179,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
         </div>
       ) : (
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-70"
+          className="absolute inset-0 bg-cover bg-center opacity-70 "
           style={{
             backgroundImage: `url(https://image.tmdb.org/t/p/original${posterPath})`,
           }}

@@ -15,20 +15,20 @@ function LogoutForm({ handleClose }: LogoutProps) {
   };
 
   return (
-    <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-420 max-w-md">
-      <h2 className="text-center text-2xl font-bold text-gray-700 mb-6">
+    <div className="bg-[#2b2f31] shadow-lg rounded-lg px-8 pt-6 pb-8 w-[440px] max-w-md">
+      <h2 className="text-center text-2xl font-bold text-white mb-6">
         Are you sure?
       </h2>
-      <div className="flex justify-center gap-2">
+      <div className="flex justify-center gap-8">
         <button
           onClick={handleLogout}
-          className="w-max bg-red-600 hover:bg-red-500 text-black py-2 px-8 rounded-lg transition font-bold text-md uppercase"
+          className="w-max bg-red-600 hover:bg-red-500 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
         >
           Yes
         </button>
         <button
           onClick={handleClose}
-          className="w-max bg-yellow-400 hover:bg-yellow-500 text-black py-2 px-8 rounded-lg transition font-bold text-md uppercase"
+          className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50"
         >
           No
         </button>

@@ -15,6 +15,7 @@ export interface AuthFormProps {
   handleClose: () => void;
   onSignUpClick?: () => void;
   onLoginClick?: () => void;
+  onSwitchMode?: () => void;
 }
 
 export interface LoginPayload {
