@@ -12,14 +12,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none; 
-  scrollbar-width: none;    
-}
-
 a {
   text-decoration: none;
 }
@@ -31,4 +23,12 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;    
 }

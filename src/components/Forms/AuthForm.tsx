@@ -6,6 +6,7 @@ import {
   registerUser,
   clearToken,
   initializeSession,
+  clearError,
 } from "../../store/authSlice";
 import { AppDispatch, RootState } from "../../store/store";
 import { LoginPayload, RegisterPayload } from "../../types/authTypes";
@@ -34,7 +35,7 @@ function AuthForm({ mode, handleClose, onSwitchMode }: AuthFormProps) {
   }, [dispatch, mode]);
 
   const handleClearError = () => {
-    dispatch(clearToken());
+    dispatch(clearError());
   };
 
   const isLoginMode = mode === "login";

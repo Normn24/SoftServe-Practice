@@ -162,7 +162,6 @@ const MovieCard: React.FC<MovieCardProps> = ({
             opts={{
               width: "100%",
               height: "100%",
-              margin: "-50px",
               playerVars: {
                 autoplay: 1,
                 controls: 0,

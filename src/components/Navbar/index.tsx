@@ -3,11 +3,9 @@ import { NavLink } from "react-router-dom";
 import { FaSearch, FaUser, FaBars } from "react-icons/fa";
 import { ImVideoCamera } from "react-icons/im";
 import ModalWindow from "../ModalWindow";
-// import LoginForm from "../Forms/LoginForm";
 import LogoutForm from "../Forms/LogoutForm";
 import { RootState } from "../../store/store";
 import { useSelector } from "react-redux";
-// import SignupForm from "../Forms/SignupForm";
 import AuthForm from "../Forms/AuthForm";
 
 type ActionType = "login" | "signup" | "logout" | "";

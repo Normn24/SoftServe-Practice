@@ -13,8 +13,6 @@ export interface ErrorResponse {
 
 export interface AuthFormProps {
   handleClose: () => void;
-  onSignUpClick?: () => void;
-  onLoginClick?: () => void;
   onSwitchMode?: () => void;
 }
 
