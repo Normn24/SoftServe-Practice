@@ -10,5 +10,5 @@ export enum StatusEnum {
 
 export enum RoutePaths {
   MAIN = "/",
-  ADMIN = "/admin"
+  ADMIN = "/admin",
 }
