@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import './FavoritesPage.css';
+import './favorites_style.css';
 
 const FavoritesPage = () => {
   const [favorites, setFavorites] = useState([]);
