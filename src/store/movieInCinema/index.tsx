@@ -39,22 +39,6 @@ export const fetchMovies = createAsyncThunk(
   }
 );
 
-// export const fetchCompanies = createAsyncThunk(
-//   "companies/fetchCompanies",
-//   async (page: number) => {
-//     const response = await axios.get(`/companies?page=${page}`);
-//     return response.data.result;
-//   }
-// );
-
-// export const fetchCompanyById = createAsyncThunk(
-//   "company/fetchCompanyById",
-//   async (id: string) => {
-//     const response = await axios.get(`/company/${id}`);
-//     return response.data.result;
-//   }
-// );
-
 const movieInCinema = createSlice({
   name: "movieInCinema",
   initialState,
