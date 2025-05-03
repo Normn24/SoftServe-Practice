@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { checkTokenExpiryMiddleware } from "../middleWare/checkTokenExpiryMiddleware";
 import authSlice from "./authSlice";
+import movieInCinemaSlice from "./movieInCinema";
 
 const store = configureStore({
   reducer: {
     auth: authSlice,
+    movieInCinema: movieInCinemaSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(checkTokenExpiryMiddleware),

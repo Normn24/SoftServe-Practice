@@ -81,6 +81,9 @@ const authSlice = createSlice({
       removeTokenFromLocalStorage();
       state.token = null;
     },
+    clearError: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -98,6 +101,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state) => {
         state.error = null;
+        state.status = StatusEnum.FULFILLED;
       })
       .addCase(registerUser.rejected, (state, { payload }) => {
         state.error = payload || null;
@@ -105,5 +109,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setToken, clearToken } = authSlice.actions;
+export const { setToken, clearToken, clearError } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,7 +1,7 @@
 import React from "react";
+import MainSlider from "../components/Sliders/MainSlider";
 
 const MainPage: React.FC = () => {
-  return <div>MainPage</div>;
+  return <MainSlider />;
 };
-
 export default MainPage;
