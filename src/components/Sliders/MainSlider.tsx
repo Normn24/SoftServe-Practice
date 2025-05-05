@@ -5,12 +5,14 @@ import { fetchMovies } from "../../store/movieInCinema";
 import { RootState, AppDispatch } from "../../store/store";
 import MovieCard from "../../components/MovieCard";
 import SliderCounter from "../../components/SliderCounter";
+import { StatusEnum } from "../../utils/EnumsFile";
+import Loader from "../Loader";
 
 const MainSlider: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const { movieInCinema, error } = useSelector(
+  const { movieInCinema, status } = useSelector(
     (state: RootState) => state.movieInCinema
   );
 
@@ -64,16 +66,14 @@ const MainSlider: React.FC = () => {
     };
   }, [throttledWheelHandler]);
 
-  if (error)
-    return (
-      <div className="flex items-center justify-center h-screen bg-black text-red-500">
-        Помилка: {error}
-      </div>
-    );
-  if (!movieInCinema || movieInCinema.length === 0)
+  if (
+    !movieInCinema ||
+    movieInCinema.length === 0 ||
+    status === StatusEnum.LOADING
+  )
     return (
       <div className="flex items-center justify-center h-screen bg-black text-white">
-        Фільмів немає.
+        <Loader />
       </div>
     );
 
@@ -83,6 +83,7 @@ const MainSlider: React.FC = () => {
       className="relative h-screen overflow-hidden bg-black"
     >
       <div className="relative w-full h-full">
+        {/* {status === StatusEnum.LOADING && <Loader />} */}
         {movieInCinema.map((movie, index) => {
           const isActive = index === activeIndex;
           return (

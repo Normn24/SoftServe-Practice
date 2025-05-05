@@ -13,17 +13,12 @@ interface MoviesState {
     | StatusEnum.SUCCEEDED
     | StatusEnum.FAILED;
   error: string | null;
-  alert: {
-    message: string;
-    status: StatusEnum.SUCCESS | StatusEnum.ERROR;
-  } | null;
 }
 
 const initialState: MoviesState = {
   movieInCinema: [],
-  status: StatusEnum.IDLE,
+  status: StatusEnum.LOADING,
   error: null,
-  alert: null,
 };
 
 export const fetchMovies = createAsyncThunk(
@@ -42,14 +37,7 @@ export const fetchMovies = createAsyncThunk(
 const movieInCinema = createSlice({
   name: "movieInCinema",
   initialState,
-  reducers: {
-    setAlert: (state, { payload }) => {
-      state.alert = payload;
-    },
-    clearAlert: (state) => {
-      state.alert = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchMovies.pending, (state) => {
@@ -66,7 +54,5 @@ const movieInCinema = createSlice({
       });
   },
 });
-
-export const { setAlert, clearAlert } = movieInCinema.actions;
 
 export default movieInCinema.reducer;
