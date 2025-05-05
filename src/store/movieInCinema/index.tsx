@@ -25,7 +25,7 @@ export const fetchMovies = createAsyncThunk(
   "movieInCinema/fetchMovies",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get("/movies-in-cinema");
+      const response = await axios.get("/movies-in-cinema?status=inCinema");
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
