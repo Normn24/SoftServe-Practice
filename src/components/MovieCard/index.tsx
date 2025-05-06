@@ -124,7 +124,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
             Select sessions
           </NavLink>
         </div>
-        <div className="flex flex-col gap-4 max-w-[360px] items-end">
+        <div className="flex flex-col gap-4 max-w-full items-end">
           <div className="flex items-center gap-6 mt-6 justify-end">
             {sessionLabel ? (
               <div className="mt-6 flex flex-col gap-2 text-sm opacity-80 ">

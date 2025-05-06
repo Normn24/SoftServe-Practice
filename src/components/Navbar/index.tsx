@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { FaSearch, FaUser, FaBars } from "react-icons/fa";
+import { FaUser, FaBars } from "react-icons/fa";
 import { ImVideoCamera } from "react-icons/im";
 import ModalWindow from "../ModalWindow";
 import LogoutForm from "../Forms/LogoutForm";
 import { RootState } from "../../store/store";
 import { useSelector } from "react-redux";
 import AuthForm from "../Forms/AuthForm";
+import SearchInput from "../SearchInput";
 
 type ActionType = "login" | "signup" | "logout" | "";
 
@@ -14,7 +15,7 @@ const Navbar: React.FC = () => {
   const [action, setAction] = useState<ActionType>("");
   const [open, setOpen] = useState<boolean>(false);
   const [showMenu, setShowMenu] = useState<boolean>(false);
-  const token = useSelector((state: RootState) => state.auth.token);
+  const token = useSelector((state: RootState) => state?.auth.token);
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -63,47 +64,46 @@ const Navbar: React.FC = () => {
           </NavLink>
         </nav>
 
-        <div className="flex items-center gap-4 relative">
-          <button className="w-12 h-12 rounded-full bg-[#2b2f31] flex items-center justify-center">
-            <FaSearch className="text-white text-sm" />
-          </button>
-
-          {token ? (
-            <div className="relative" ref={menuRef}>
+        <div className="flex items-center min-w-[100px] relative">
+          <div className="absolute top-0s right-0 flex items-center gap-4">
+            <SearchInput />
+            {token ? (
+              <div className="relative" ref={menuRef}>
+                <button
+                  onClick={() => setShowMenu((prev) => !prev)}
+                  className="w-12 h-12 rounded-full bg-[#2b2f31] flex items-center justify-center hover:bg-[#3a3f42]"
+                >
+                  <FaUser className="text-white text-sm" />
+                </button>
+                {showMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-[#2b2f31] border border-gray-700 rounded-md shadow-lg z-50">
+                    <ul className="text-sm py-2">
+                      <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
+                        Profile
+                      </li>
+                      <li
+                        onClick={() => openModal("logout")}
+                        className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
+                      >
+                        Log out
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : (
               <button
-                onClick={() => setShowMenu((prev) => !prev)}
-                className="w-12 h-12 rounded-full bg-[#2b2f31] flex items-center justify-center"
+                onClick={() => openModal("login")}
+                className="w-12 h-12 rounded-full bg-[#2b2f31] hover:bg-[#3a3f42] flex items-center justify-center"
               >
                 <FaUser className="text-white text-sm" />
               </button>
-              {showMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-[#2b2f31] border border-gray-700 rounded-md shadow-lg z-50">
-                  <ul className="text-sm py-2">
-                    <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
-                      Profile
-                    </li>
-                    <li
-                      onClick={() => openModal("logout")}
-                      className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
-                    >
-                      Log out
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
-          ) : (
-            <button
-              onClick={() => openModal("login")}
-              className="w-12 h-12 rounded-full bg-[#2b2f31] flex items-center justify-center"
-            >
-              <FaUser className="text-white text-sm" />
-            </button>
-          )}
+            )}
 
-          <button className="w-12 h-12  rounded-full bg-[#2b2f31] flex items-center justify-center">
-            <FaBars className="text-white text-sm" />
-          </button>
+            <button className="w-12 h-12  rounded-full bg-[#2b2f31] flex items-center justify-center">
+              <FaBars className="text-white text-sm" />
+            </button>
+          </div>
         </div>
       </header>
 
