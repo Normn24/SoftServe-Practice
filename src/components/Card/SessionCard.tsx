@@ -1,23 +1,33 @@
+import { useDispatch} from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { removeSessions } from "../../store/sessionSlice";
+
 type SessionCardProps = {
-    movie: any;
+  movieId: any;
 }
 
-export default function SessionCard({  movie }: SessionCardProps) {
+export default function SessionCard({  movieId }: SessionCardProps) {
+  const dispatch = useDispatch<AppDispatch>();
+
+
+  const handleDeleteSessinon = (sessionId: number) => {
+    dispatch(removeSessions({movieId, sessionId}))
+  }
   return (
-    <div key={movie.movieId} className="flex flex-col gap-5 mt-5">
-      <h1 className="text-2xl font-bold mt-10">{movie.tmdbDetails?.title}</h1>
+    <div className="flex flex-col gap-5 mt-5">
+      <h1 className="text-2xl font-bold mt-10">{movieId.tmdbDetails?.title}</h1>
       <div className="flex flex-wrap justify-start gap-5">
-       {movie.sessions.map((session: any) => (
-        <div id={session.sessionId} className="card bg-base-100 image-full w-96 shadow-sm">
+       {movieId.sessions.map((session: any) => (
+        <div key={session.sessionId} className="card bg-base-100 image-full w-96 shadow-sm">
           <figure>
             <img
-              src={`https://image.tmdb.org/t/p/w500${movie.tmdbDetails?.poster_path}`}
-              alt={movie.tmdbDetails?.title || 'Movie Poster'}
+              src={`https://image.tmdb.org/t/p/w500${movieId.tmdbDetails?.poster_path}`}
+              alt={movieId.tmdbDetails?.title || 'Movie Poster'}
             />
           </figure>
           <div className="card-body flex justify-between">
             <div className="flex flex-col gap-4">
-              <h2 className="card-title text-yellow-400">{movie.tmdbDetails?.title || 'No Title'}</h2>
+              <h2 className="card-title text-yellow-400">{movieId.tmdbDetails?.title || 'No Title'}</h2>
               <div>
                 <p>{new Date(session.dateTime).toLocaleDateString()}</p>
                 <p>{new Date(session.dateTime).toLocaleTimeString()}</p>
@@ -35,7 +45,7 @@ export default function SessionCard({  movie }: SessionCardProps) {
               </div>
             </div>
             <div className="card-actions justify-end">
-              <a className="btn bg-red-600 border-none">
+              <a className="btn bg-red-600 border-none" onClick={() =>handleDeleteSessinon(session.sessionId)}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

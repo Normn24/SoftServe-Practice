@@ -6,7 +6,7 @@ type CardProps = {
 
 export default function Card({ movie }: CardProps) {
   return (
-    <div key={movie.movieId} className="card bg-base-100 image-full w-96 shadow-sm">
+    <div className="card bg-base-100 image-full w-96 shadow-sm">
             <figure>
               <img
                 src={`https://image.tmdb.org/t/p/w500${movie.tmdbDetails?.poster_path}`}
@@ -19,13 +19,11 @@ export default function Card({ movie }: CardProps) {
                 <p>{movie.tmdbDetails?.overview}</p>
                 <div className='flex gap-1 justify-start items-start'>
                   {movie.tmdbDetails.genres.map((genre: any) => (
-                    <h3 className='w-[70%]'>• {genre?.name}</h3>
+                    <h3 className='w-[70%]' key={genre.id}>• {genre?.name}</h3>
                     
                   ))}
                 </div>
-              </div>  
-              
-              
+              </div>   
               <div className="card-actions justify-between items-center flex-row">
                 <div className='flex flex-row items-center gap-2'>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="yellow" className="size-8">
@@ -35,12 +33,11 @@ export default function Card({ movie }: CardProps) {
                   <h1 className='font-extrabold text-xl text-yellow-300'>{movie.tmdbDetails?.vote_average.toFixed(1)}</h1>
                 </div>
                 <button onClick={() => {
-                  const dialog = document.getElementById('add_session') as HTMLDialogElement | null;
+                  const dialog = document.getElementById(`add_session_${movie.movieId}`) as HTMLDialogElement | null;
                   if (dialog) dialog.showModal();
                 }} className="btn bg-yellow-400 dark:text-yellow-400 dark:bg-gray-900">Add new session</button>
               </div>
-
-              <AddSession/>
+              <AddSession movieId={movie.movieId}/>
             </div>
     </div>
   )

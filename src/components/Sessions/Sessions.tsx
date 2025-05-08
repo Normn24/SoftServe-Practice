@@ -27,11 +27,8 @@ export default function Sessions() {
          {loading === true ? (
            <Spinner/>
          ) : movies.map((movie) => (          
-            <SessionCard movie={movie}/>
+            <SessionCard  key={movie.movieId} movieId={movie}/>
         ))}
-        
-
-        
     </div>
   )
 }
