@@ -1,8 +1,8 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { addSessions } from '../../store/sessionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from "../../store/store";
+import { useDispatch} from 'react-redux';
+import { AppDispatch } from "../../store/store";
 
 export default function AddSession({ movieId }: { movieId: number }) {
   const dispatch = useDispatch<AppDispatch>();

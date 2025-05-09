@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Spinner from '../Spinner/Spinner';
 import SessionCard from '../Card/SessionCard';
 
@@ -16,7 +16,12 @@ export default function Sessions() {
       setMovies(res.data);
       setLoading(false);
     })
+    .catch((err) => {
+      console.error("Failed to load movies:", err);
+      setLoading(false);
+    });
   }
+
   return (
     <div className='p-9'>
         <div className='flex justify-between'>
@@ -24,10 +29,10 @@ export default function Sessions() {
           <a className='btn bg-yellow-400 btn-md rounded-lg text-black' onClick={handleLoadMovies}>Load</a>
         </div>
 
-         {loading === true ? (
+         {loading ? (
            <Spinner/>
          ) : movies.map((movie) => (          
-            <SessionCard  key={movie.movieId} movieId={movie}/>
+            <SessionCard  key={movie.movieId} movieId={movie} reloadMovies={handleLoadMovies}/>
         ))}
     </div>
   )

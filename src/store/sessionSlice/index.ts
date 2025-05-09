@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 import { ErrorResponse } from "react-router-dom";
 
 interface Session {
-    sessionId: number;
+    sessionId?: number;
     dateTime: string;
     price: number;
     seats: number[]; 
@@ -47,6 +47,8 @@ export const removeSessions = createAsyncThunk(
   "sessions/removeSessions",
   async ({movieId, sessionId}: {movieId: number; sessionId: number}, { rejectWithValue }) => {
     try {
+      console.log("movieId:", movieId); 
+      console.log("sessionId:", sessionId);
       const resposne = await axios.delete(`/movies-in-cinema/${movieId}/sessions/${sessionId}`);
       return resposne.data;
 

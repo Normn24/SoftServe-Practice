@@ -4,15 +4,21 @@ import { removeSessions } from "../../store/sessionSlice";
 
 type SessionCardProps = {
   movieId: any;
+  reloadMovies: () => void;
 }
 
 export default function SessionCard({  movieId }: SessionCardProps) {
   const dispatch = useDispatch<AppDispatch>();
 
-
-  const handleDeleteSessinon = (sessionId: number) => {
-    dispatch(removeSessions({movieId, sessionId}))
+  const handleDeleteSessinon = async (sessionId: number) => {
+    try {
+      const movieInId = movieId.movieId;
+      await dispatch(removeSessions({ movieId: movieInId, sessionId: sessionId }))
+    } catch (error) {
+      alert(`Error deleting session: ${error}`);
+    }
   }
+
   return (
     <div className="flex flex-col gap-5 mt-5">
       <h1 className="text-2xl font-bold mt-10">{movieId.tmdbDetails?.title}</h1>
@@ -45,7 +51,7 @@ export default function SessionCard({  movieId }: SessionCardProps) {
               </div>
             </div>
             <div className="card-actions justify-end">
-              <a className="btn bg-red-600 border-none" onClick={() =>handleDeleteSessinon(session.sessionId)}>
+              <a className="btn bg-red-600 border-none" onClick={() => handleDeleteSessinon(session._id)}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -61,7 +67,7 @@ export default function SessionCard({  movieId }: SessionCardProps) {
                   />
                 </svg>
               </a>
-              <a className="btn bg-blue-500 border-none">
+              <a className="btn bg-blue-500 border-none" >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
