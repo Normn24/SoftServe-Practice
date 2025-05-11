@@ -1,6 +1,7 @@
 import { useDispatch} from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { removeSessions } from "../../store/sessionSlice";
+import UpdateSession from "../UpdateSession/UpdateSession";
 
 type SessionCardProps = {
   movieId: any;
@@ -67,7 +68,11 @@ export default function SessionCard({  movieId }: SessionCardProps) {
                   />
                 </svg>
               </a>
-              <a className="btn bg-blue-500 border-none" >
+              <a className="btn bg-blue-500 border-none" onClick={() => {
+                const modal = document.getElementById(`add_session_${session._id}`) as HTMLDialogElement | null;
+                if (modal) modal.showModal();
+                console.log(session);
+              }} >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -85,9 +90,9 @@ export default function SessionCard({  movieId }: SessionCardProps) {
               </a>
             </div>
           </div>
+          <UpdateSession movieId={movieId.movieId} _id={session._id} dateTime={session.dateTime} ticketPrice={session.price} countOfSeats={session.seats}/>
         </div>
       ))}
-        
       </div>
     </div>
   );

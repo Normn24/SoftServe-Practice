@@ -31,7 +31,7 @@ export default function AddSession({ movieId }: { movieId: number }) {
   });
 
   return (
-    <dialog id={`add_session_${movieId}`} className="modal">
+    <dialog id={`add_session_${movieId}`} className="modal modal-bottom sm:modal-middle">
       <div className="modal-box">
         <h1 className="text-black dark:text-white font-bold text-2xl text-start pb-4">Add new Session: </h1>
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
