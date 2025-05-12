@@ -69,9 +69,25 @@ export const TrailerSection: FC<Props> = ({ videoKey }) => {
             />
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute top-2 right-2 text-white text-3xl"
+              className="absolute flex bg-blue-800/25 py-2 px-5 rounded-3xl top-5 left-5 text-white text-2xl hover:border-b hover:border-white"
             >
-              ✖
+              <svg
+                width="36"
+                height="36"
+                viewBox="0 0 36 36"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className=" transform rotate-180"
+              >
+                <path
+                  d="M13.5 27L22.5 18L13.5 9"
+                  stroke="#fff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <p>Back to movie details</p>
             </button>
           </div>
         </div>
