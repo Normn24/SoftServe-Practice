@@ -1,12 +1,12 @@
-import { BrowserRouter as Router } from "react-router-dom";
-import AppRoute from "./utils/AppRoute";
-import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { initializeSession } from "./store/authSlice";
-import { AppDispatch } from "./store/store";
+import { useDispatch } from "react-redux";
+import { BrowserRouter as Router } from "react-router-dom";
+import "./App.css";
 import LogInForm from "./components/Forms/loginForm";
 import ModalWindow from "./components/ModalWindow";
-import "./App.css";
+import { initializeSession } from "./store/authSlice";
+import { AppDispatch } from "./store/store";
+import AppRoute from "./utils/AppRoute";
 
 type ActionType = "login" | "signup" | "logout" | "";
 
@@ -27,7 +27,7 @@ function App() {
   return (
     <Router>
       <AppRoute />
-      <button onClick={() => openModal("login")}>login</button>
+      {/* <button onClick={() => openModal("login")}>login</button> */}
       <ModalWindow open={open} onClose={onClose}>
         {action === "login" && <LogInForm handleClose={onClose} />}
       </ModalWindow>
