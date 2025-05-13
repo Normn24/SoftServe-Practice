@@ -35,7 +35,13 @@ const SeatGrid: React.FC<SeatGridProps> = ({ seats, onSeatSelect }) => {
       <div className="w-full h-0 border-b-[50px] border-l-[15px] border-r-[15px] border-b-white border-l-transparent border-r-transparent mb-5 rotate-180 shadow-[0px_-27px_32px_-23px_#ffffff]"></div>
       <div className="flex flex-col items-center space-y-1">
         {rows.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex justify-center space-x-0.5">
+          <div
+            key={rowIndex}
+            className="flex justify-center items-center space-x-0.5"
+          >
+            <div className="w-6 text-center text-sm text-gray-400">
+              {rowIndex + 1}
+            </div>
             {row.map((seat) => (
               <button
                 key={seat._id}
@@ -46,9 +52,12 @@ const SeatGrid: React.FC<SeatGridProps> = ({ seats, onSeatSelect }) => {
                   onSeatSelect(seat._id, seat.seatNumber)
                 }
                 className={getSeatClasses(seat)}
-                aria-label={`Місце ${seat.seatNumber}`}
+                aria-label={`Location ${seat.seatNumber}`}
               ></button>
             ))}
+            <div className="w-6 text-center text-sm text-gray-400">
+              {rowIndex + 1}
+            </div>
           </div>
         ))}
       </div>

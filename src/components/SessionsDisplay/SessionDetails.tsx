@@ -1,13 +1,16 @@
 import React from "react";
 import SeatGrid from "./SeatGrid";
 import { SessionData } from "../../types/authTypes";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 
 interface SessionDetailsProps {
   session: SessionData;
 }
 
 const SessionDetails: React.FC<SessionDetailsProps> = ({ session }) => {
+  const { movieId } = useParams<{
+    movieId: string;
+  }>();
   const sessionTime = new Date(session.session.dateTime).toLocaleTimeString(
     "en-GB",
     {
@@ -20,7 +23,7 @@ const SessionDetails: React.FC<SessionDetailsProps> = ({ session }) => {
 
   return (
     <div className="bg-gray-800 p-4 rounded-lg shadow-lg text-white w-full">
-      <NavLink to={"/"}>
+      <NavLink to={`/${movieId}/sessions/${session.session._id}`}>
         <div className="mb-3">
           <p className="text-lg font-bold">
             {sessionTime}

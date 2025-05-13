@@ -6,6 +6,7 @@ import movieInCinemaSlice from "./movieInCinema";
 import movieSearchSlice from "./movieSearch";
 import moviesUpComming from "./newMovie";
 import sessionsSlice from "./sessionsSlice";
+import bookingSlice from "./bookingSlice";
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     movieSearch: movieSearchSlice,
     moviesUpComming: moviesUpComming,
     sessions: sessionsSlice,
+    booking: bookingSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(checkTokenExpiryMiddleware),

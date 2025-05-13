@@ -71,12 +71,12 @@ const Navbar: React.FC = () => {
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setShowMenu((prev) => !prev)}
-                  className="w-12 h-12 rounded-full bg-[#2b2f31] flex items-center justify-center hover:bg-[#3a3f42]"
+                  className="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700"
                 >
                   <FaUser className="text-white text-sm" />
                 </button>
                 {showMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-[#2b2f31] border border-gray-700 rounded-md shadow-lg z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-50">
                     <ul className="text-sm py-2">
                       <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
                         Profile
@@ -94,13 +94,13 @@ const Navbar: React.FC = () => {
             ) : (
               <button
                 onClick={() => openModal("login")}
-                className="w-12 h-12 rounded-full bg-[#2b2f31] hover:bg-[#3a3f42] flex items-center justify-center"
+                className="w-12 h-12 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center"
               >
                 <FaUser className="text-white text-sm" />
               </button>
             )}
 
-            <button className="w-12 h-12  rounded-full bg-[#2b2f31] flex items-center justify-center">
+            <button className="w-12 h-12  rounded-full bg-gray-800 flex items-center justify-center">
               <FaBars className="text-white text-sm" />
             </button>
           </div>
