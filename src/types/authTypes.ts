@@ -30,13 +30,22 @@ export interface Session {
   dateTime: string;
   price: number;
   seats: Seat[];
+  _id: string;
+}
+export interface SessionData {
+  session: {
+    dateTime: string;
+    price: number;
+    seats: Seat[];
+    _id: string;
+  };
 }
 
 export interface Seat {
   seatNumber: number;
   isBooked: boolean;
+  _id: string;
 }
-
 export interface Movie {
   _id: string;
   movieId: number;

@@ -2,13 +2,24 @@ import { Routes, Route } from "react-router-dom";
 import { RoutePaths } from "./EnumsFile";
 import MainPage from "../pages/MainPage";
 import PrivateRoutes from "./PrivateRoutes";
+import SessionPage from "../pages/SessionPage";
+import SeatSelectionPage from "../pages/SeatSelectionPage";
+import PaymentPage from "../pages/PaymentPage";
 
 function AppRoute() {
   return (
     <Routes>
       <Route path={RoutePaths.MAIN} element={<MainPage />} />
+      <Route path={RoutePaths.MOVIESESSIONS} element={<SessionPage />} />
+      <Route
+        path={RoutePaths.MOVIESESSIONSBOOK}
+        element={<SeatSelectionPage />}
+      />
       <Route element={<PrivateRoutes />}>
-        {/* <Route path={RoutePaths.} element={} /> Example */}
+        <Route
+          path={RoutePaths.MOVIESESSIONSPAYMENT}
+          element={<PaymentPage />}
+        />
       </Route>
     </Routes>
   );

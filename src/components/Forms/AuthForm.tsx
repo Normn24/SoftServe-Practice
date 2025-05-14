@@ -72,7 +72,7 @@ function AuthForm({ mode, handleClose, onSwitchMode }: AuthFormProps) {
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4">
-      <div className="bg-[#2b2f31] shadow-lg rounded-lg px-8 pt-6 pb-8 w-[440px] max-w-md text-white">
+      <div className="bg-gray-800 shadow-lg rounded-lg px-8 pt-6 pb-8 w-[440px] max-w-md text-white">
         <h2 className="text-center text-2xl font-bold mb-6">{title}</h2>
         <Formik
           initialValues={initialValues ?? " "}
