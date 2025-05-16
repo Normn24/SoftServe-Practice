@@ -5,6 +5,7 @@ import PrivateRoutes from "./PrivateRoutes";
 import SessionPage from "../pages/SessionPage";
 import SeatSelectionPage from "../pages/SeatSelectionPage";
 import PaymentPage from "../pages/PaymentPage";
+import AdminPage from "../pages/admin/Admin";
 
 function AppRoute() {
   return (
@@ -21,6 +22,7 @@ function AppRoute() {
           element={<PaymentPage />}
         />
       </Route>
+      <Route path={RoutePaths.ADMIN} element={<AdminPage />} />
     </Routes>
   );
 }

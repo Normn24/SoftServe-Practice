@@ -27,6 +27,7 @@ export interface RegisterPayload {
 }
 
 export interface Session {
+  sessionId?: number;
   dateTime: string;
   price: number;
   seats: Seat[];
