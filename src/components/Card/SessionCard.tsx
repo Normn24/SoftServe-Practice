@@ -2,9 +2,10 @@ import { useDispatch} from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { removeSessions } from "../../store/sessionSlice";
 import UpdateSession from "../UpdateSession/UpdateSession";
+import { Movie } from "../../types/movieType";
 
 type SessionCardProps = {
-  movieId: any;
+  movieId: Movie;
   reloadMovies: () => void;
 }
 

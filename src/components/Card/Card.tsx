@@ -1,7 +1,8 @@
+import { Genre, Movie } from '../../types/movieType';
 import AddSession from '../AddSession/AddSession';
 
 type CardProps = {
-  movie: any;
+  movie: Movie;
 }
 
 export default function Card({ movie }: CardProps) {
@@ -18,7 +19,7 @@ export default function Card({ movie }: CardProps) {
                 <h2 className="card-title text-yellow-400">{movie.tmdbDetails?.title || "No Title"}</h2>
                 <p>{movie.tmdbDetails?.overview}</p>
                 <div className='flex gap-1 justify-start items-start'>
-                  {movie.tmdbDetails.genres.map((genre: any) => (
+                  {movie.tmdbDetails.genres.map((genre: Genre) => (
                     <h3 className='w-[70%]' key={genre.id}>• {genre?.name}</h3>
                     
                   ))}
