@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Genre, ProductionCompanies } from "../../types/movieTypes";
+import { Genre, ProductionCompany } from "../../types/movieTypes";
 import { GenreItem } from "./GenreItem";
 import { MovieDetailItem } from "./MovieDetailItem";
 
@@ -8,7 +8,7 @@ interface Props {
   origin_country: string[];
   overview: string;
   poster_path: string;
-  production_companies: ProductionCompanies[];
+  production_companies: ProductionCompany[];
   release_date: string;
   runtime: number;
   spoken_languages: string[];
@@ -28,7 +28,7 @@ export const MovieDetailsSection: FC<Props> = ({
     <div className="max-w-[90rem] m-auto flex p-10 justify-center">
       <div className="flex-[30%] flex justify-center ">
         <img
-          src={poster_path}
+          src={`https://image.tmdb.org/t/p/original//${poster_path}`}
           alt="Poster image"
           className="w-[15rem] h-[22.5rem]"
         ></img>
@@ -49,7 +49,7 @@ export const MovieDetailsSection: FC<Props> = ({
           {production_companies.map((company) => (
             <div className="flex flex-col gap-2 items-center" key={company.id}>
               <img
-                src={company.logo_path}
+                src={`https://image.tmdb.org/t/p/original//${company.logo_path}`}
                 className="w-[80px] h-[80px] rounded-[50%]"
               ></img>
               <p>{company.name}</p>

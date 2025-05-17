@@ -1,25 +1,24 @@
-
 export interface Movie {
-  adult: boolean,
-  backdrop_path: string,
-  id: number,
+  adult: boolean;
+  backdrop_path: string;
+  id: number;
   recommendations: TrailerInfo;
-  original_language: string,
-  original_title: string,
-  popularity: number,
-  title: string,
-  video: string, //In current version it`s boolean
-  vote_average: number,
-  vote_count: number,
+  original_language: string;
+  original_title: string;
+  popularity: number;
+  title: string;
+  vote_average: number;
+  vote_count: number;
   genres: Genre[];
   origin_country: string[];
   overview: string;
   poster_path: string;
-  production_companies: ProductionCompanies[];
+  production_companies: ProductionCompany[];
   release_date: string;
   runtime: number;
-  spoken_languages:string[];
-  cast: Actor[]
+  spoken_languages: string[];
+  videos: string;
+  cast: Actor[];
 }
 
 export interface Actor {
@@ -33,7 +32,7 @@ export interface Actor {
   character: string;
 }
 
-export interface ProductionCompanies {
+export interface ProductionCompany {
   id: number;
   logo_path: string;
   name: string;
@@ -43,7 +42,7 @@ export interface Genre {
   name: string;
 }
 
-export interface TrailerInfo{
+export interface TrailerInfo {
   name: string;
   key: string;
 }

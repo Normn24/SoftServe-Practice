@@ -17,8 +17,9 @@ export const BackdropSection: FC<Props> = ({
   return (
     <div
       style={{
-        background: `linear-gradient(to top, rgba(0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%), url(${backdrop_path})`,
+        background: `linear-gradient(to top, rgba(0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%), url(https://image.tmdb.org/t/p/original//${backdrop_path})`,
         backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
       }}
       className="w-full h-10/12 relative"
     >
@@ -28,9 +29,7 @@ export const BackdropSection: FC<Props> = ({
         <p>{overview}</p>
       </div>
       <div className="absolute bottom-1/12 right-0 m-5">
-        <p style={{}} className="">
-          First release: {release_date}
-        </p>
+        <p className="">First release: {release_date}</p>
       </div>
     </div>
   );

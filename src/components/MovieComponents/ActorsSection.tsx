@@ -63,7 +63,7 @@ export const ActorsSection: FC<Props> = ({ cast }) => {
               <ActorCard
                 name={actor.name}
                 original_name={actor.original_name}
-                profile_path={actor.profile_path}
+                profile_path={`https://image.tmdb.org/t/p/original//${actor.profile_path}`}
                 character={actor.character}
               />
             </SwiperSlide>
