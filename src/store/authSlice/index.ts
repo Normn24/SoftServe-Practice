@@ -39,7 +39,6 @@ export const login = createAsyncThunk<
     const response = await axios.post("customers/login", userData);
     const token = response.data.token;
     dispatch(setToken(token));
-
     return token;
   } catch (error) {
     const axiosError = error as AxiosError<ErrorResponse>;

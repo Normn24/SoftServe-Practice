@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import {  NavLink, useNavigate } from "react-router-dom";
 import { FaUser, FaBars } from "react-icons/fa";
 import { ImVideoCamera } from "react-icons/im";
 import ModalWindow from "../ModalWindow";
@@ -16,6 +16,8 @@ const Navbar: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const token = useSelector((state: RootState) => state?.auth.token);
+
+  const navigate = useNavigate()
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -77,8 +79,8 @@ const Navbar: React.FC = () => {
                 </button>
                 {showMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-50">
-                    <ul className="text-sm py-2">
-                      <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
+                    <ul className="text-sm py-2 w-full">
+                      <li onClick={() => navigate('/profile')} className="px-4 py-2 hover:bg-gray-700 cursor-pointer w-full">
                         Profile
                       </li>
                       <li

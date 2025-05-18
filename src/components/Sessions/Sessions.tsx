@@ -13,18 +13,6 @@ export default function Sessions() {
   const dispatch = useDispatch<AppDispatch>()
 
   const handleLoadMovies = () => {
-    // setLoading(true);
-    // const apiUrl = 'https://soft-serve-practice-back.vercel.app/api/movies-in-cinema';
-    // axios.get(apiUrl)
-    // .then((res) => {
-    //   console.log(res.data);
-    //   setMovies(res.data);
-    //   setLoading(false);
-    // })
-    // .catch((err) => {
-    //   console.error("Failed to load movies:", err);
-    //   setLoading(false);
-    // });
     dispatch(fetchAllMovies())
   }
 
