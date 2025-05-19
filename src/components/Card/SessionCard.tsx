@@ -22,7 +22,7 @@ export default function SessionCard({  movieId }: SessionCardProps) {
 
   return (
     <div className="flex flex-col gap-5 mt-5">
-      <h1 className="text-2xl font-bold mt-10">{movieId.tmdbDetails?.title}</h1>
+      <h1 className="text-2xl font-bold mt-10 text-black dark:text-white">{movieId.tmdbDetails?.title}</h1>
       <div className="flex flex-wrap justify-start gap-5">
        {movieId.sessions.map((session: any) => (
         <div key={session.sessionId} className="card bg-base-100 image-full w-96 shadow-sm">

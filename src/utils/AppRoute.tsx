@@ -6,6 +6,7 @@ import SessionPage from "../pages/SessionPage";
 import SeatSelectionPage from "../pages/SeatSelectionPage";
 import PaymentPage from "../pages/PaymentPage";
 import AdminPage from "../pages/admin/Admin";
+import Profile from "../pages/profile/Profile";
 
 function AppRoute() {
   return (
@@ -22,6 +23,7 @@ function AppRoute() {
           element={<PaymentPage />}
         />
       </Route>
+      <Route path = {RoutePaths.PROFILE} element = {<Profile/>}/>
       <Route path={RoutePaths.ADMIN} element={<AdminPage />} />
     </Routes>
   );

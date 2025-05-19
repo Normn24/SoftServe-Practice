@@ -16,6 +16,7 @@ import {
 } from "../../validation/validationSchemas";
 import { initialValuesTemp } from "../../validation/initialValuesTemp";
 import { loginFields, signupFields } from "../../validation/authfields";
+import { useNavigate } from "react-router-dom";
 
 interface AuthFormProps {
   mode: "login" | "signup";
@@ -26,6 +27,7 @@ interface AuthFormProps {
 function AuthForm({ mode, handleClose, onSwitchMode }: AuthFormProps) {
   const dispatch = useDispatch<AppDispatch>();
   const { error } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (mode === "login") {
@@ -68,6 +70,8 @@ function AuthForm({ mode, handleClose, onSwitchMode }: AuthFormProps) {
         onSwitchMode();
       }
     }
+
+    console.log(response)
   };
 
   return (
