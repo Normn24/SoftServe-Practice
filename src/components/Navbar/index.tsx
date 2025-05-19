@@ -8,6 +8,7 @@ import { RootState } from "../../store/store";
 import { useSelector } from "react-redux";
 import AuthForm from "../Forms/AuthForm";
 import SearchInput from "../SearchInput";
+import { RoutePaths } from "../../utils/EnumsFile";
 
 type ActionType = "login" | "signup" | "logout" | "";
 
@@ -50,7 +51,7 @@ const Navbar: React.FC = () => {
 
         <nav className="flex items-center gap-6 text-md font-bold uppercase tracking-wider">
           <NavLink
-            to="/"
+            to={RoutePaths.MAIN}
             className={({ isActive }) =>
               isActive
                 ? "relative text-white after:absolute after:-bottom-2.5 after:left-0 after:w-full after:h-1 after:bg-yellow-400 after:rounded-md"
@@ -59,8 +60,8 @@ const Navbar: React.FC = () => {
           >
             In Live
           </NavLink>
-          <NavLink to="/online" className="text-gray-400 hover:text-white">
-            New page
+          <NavLink to={RoutePaths.NewMovies} className="text-gray-400 hover:text-white">
+            Coming Soon
           </NavLink>
         </nav>
 

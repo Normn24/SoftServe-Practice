@@ -3,14 +3,14 @@ import { checkTokenExpiryMiddleware } from "../middleWare/checkTokenExpiryMiddle
 import authSlice from "./authSlice";
 import movieInCinemaSlice from "./movieInCinema";
 import movieSearchSlice from "./movieSearch";
-import movieInCinema from "./newMovie";
+import moviesUpComming from "./newMovie";
 
 const store = configureStore({
   reducer: {
     auth: authSlice,
     movieInCinema: movieInCinemaSlice,
     movieSearch: movieSearchSlice,
-    movieUpComming: movieInCinema,
+    moviesUpComming: moviesUpComming,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(checkTokenExpiryMiddleware),

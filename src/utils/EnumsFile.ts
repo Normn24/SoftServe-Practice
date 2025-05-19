@@ -11,4 +11,5 @@ export enum StatusEnum {
 export enum RoutePaths {
   MAIN = "/",
   Admin = "/admin",
+  NewMovies = "/coming-soon"
 }
