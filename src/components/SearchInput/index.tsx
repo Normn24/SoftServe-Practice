@@ -77,7 +77,7 @@ const SearchInput: React.FC = () => {
       {!isSearchOpen && (
         <button
           onClick={toggleSearch}
-          className="w-12 h-12 rounded-full bg-[#2b2f31] flex items-center justify-center text-white hover:bg-[#3a3f42] transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          className="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500"
           aria-label="Open search"
         >
           <FaSearch className="text-white text-sm" />
@@ -96,7 +96,7 @@ const SearchInput: React.FC = () => {
             value={currentQuery}
             onChange={handleInputChange}
             placeholder="Movie search..."
-            className={`h-12 pl-12 pr-4 py-2 rounded-full bg-[#3a3f42] text-white placeholder-gray-400
+            className={`h-12 pl-12 pr-4 py-2 rounded-full bg-gray-700 text-white placeholder-gray-400
               focus:outline-none focus:ring-2 focus:ring-yellow-500
               transition-[width] duration-300 ease-in-out
               ${isSearchOpen ? "w-64 sm:w-80 visible" : "w-0 invisible"}`}
@@ -111,7 +111,7 @@ const SearchInput: React.FC = () => {
       {isSearchOpen && currentQuery.trim().length > 0 && (
         <div
           className="absolute top-full right-0 md:left-0 md:right-auto mt-2 w-full min-w-[200px] max-w-[320px] max-h-84 overflow-y-auto 
-                     bg-[#2b2f31] rounded-lg shadow-xl z-20 scrollbar-hide"
+                     bg-gray-800 rounded-lg shadow-xl z-20 scrollbar-hide"
         >
           {searchResults.length > 0 ? (
             <>
@@ -119,7 +119,7 @@ const SearchInput: React.FC = () => {
                 <NavLink
                   key={movie.movieId}
                   to={`/movie/${movie.movieId}`}
-                  className="flex items-center p-3 hover:bg-[#3a3f42] cursor-pointer transition-colors no-underline overflow-hidden"
+                  className="flex items-center p-3 hover:bg-gray-700 cursor-pointer transition-colors no-underline overflow-hidden"
                   onClick={(e) => {
                     e.preventDefault();
                     setIsSearchOpen(false);

@@ -7,6 +7,7 @@ import MovieCard from "../../components/MovieCard";
 import SliderCounter from "../../components/SliderCounter";
 import { StatusEnum } from "../../utils/EnumsFile";
 import Loader from "../Loader";
+import { fetchAllMovies } from "../../store/allMovies";
 
 const MainSlider: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,6 +19,7 @@ const MainSlider: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchMovies());
+    dispatch(fetchAllMovies());
   }, [dispatch]);
 
   const changeSlide = useCallback(
@@ -83,7 +85,6 @@ const MainSlider: React.FC = () => {
       className="relative h-screen overflow-hidden bg-black"
     >
       <div className="relative w-full h-full">
-        {/* {status === StatusEnum.LOADING && <Loader />} */}
         {movieInCinema.map((movie, index) => {
           const isActive = index === activeIndex;
           return (
@@ -105,7 +106,7 @@ const MainSlider: React.FC = () => {
             >
               <div className="w-full h-full flex items-center justify-center">
                 <MovieCard
-                  movieId={movie.movieId}
+                  movieId={String(movie.movieId)}
                   title={movie.tmdbDetails?.title || "N/A"}
                   description={movie.tmdbDetails?.overview || ""}
                   posterPath={movie.tmdbDetails?.poster_path}
