@@ -1,7 +1,4 @@
 import { FC, useRef } from "react";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Actor } from "../../types/movieTypes";
@@ -48,9 +45,14 @@ export const ActorsSection: FC<Props> = ({ cast }) => {
         }}
         onInit={(swiper) => {
           setTimeout(() => {
-            if (prevRef.current && nextRef.current) {
+            if (
+              prevRef.current &&
+              nextRef.current &&
+              swiper.params.navigation
+            ) {
               swiper.params.navigation.prevEl = prevRef.current;
               swiper.params.navigation.nextEl = nextRef.current;
+
               swiper.navigation.init();
               swiper.navigation.update();
             }
