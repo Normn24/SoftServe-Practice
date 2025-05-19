@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { checkTokenExpiryMiddleware } from "../middleWare/checkTokenExpiryMiddleware";
 import authSlice from "./authSlice";
+import movieSlice from "./movieSlice";
 import allMoviesSlice from "./allMovies";
 import movieInCinemaSlice from "./movieInCinema";
 import movieSearchSlice from "./movieSearch";
@@ -13,6 +14,7 @@ import favoritesSlice from "./favoritesSlice";
 const store = configureStore({
   reducer: {
     auth: authSlice,
+    movie: movieSlice,
     profile: profileSlice,
     allMovies: allMoviesSlice,
     movieInCinema: movieInCinemaSlice,

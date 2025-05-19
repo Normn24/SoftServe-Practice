@@ -1,6 +1,7 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { RoutePaths } from "./EnumsFile";
 import MainPage from "../pages/MainPage";
+import FilmPage from "../pages/MoviePage";
 import NewMoviesPage from "../pages/NewMoviesPage";
 import PrivateRoutes from "./PrivateRoutes";
 import FavoritesPage from "../components/Favorites/favorites";
@@ -14,6 +15,7 @@ function AppRoute() {
   return (
     <Routes>
       <Route path={RoutePaths.MAIN} element={<MainPage />} />
+      <Route path={RoutePaths.MOVIE} element={<FilmPage />} />
       <Route path={RoutePaths.NewMovies} element={<NewMoviesPage />} />
       <Route path={RoutePaths.MOVIESESSIONS} element={<SessionPage />} />
       <Route

@@ -1,8 +1,9 @@
 @import "tailwindcss";
+@plugin "daisyui";
+@import "swiper/css/pagination";
+@import "swiper/css/scrollbar";
+@import "swiper/css";
 #root {
   min-width: 100%;
   margin: 0 auto;
 }
-@plugin "daisyui";
-
-
