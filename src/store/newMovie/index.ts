@@ -23,9 +23,10 @@ const initialState: MoviesState = {
 
 export const fetchNewMovies = createAsyncThunk(
   "moviesUpComming/fetchNewMovies",
-  async (page: number, { rejectWithValue }) => {  // Додаємо параметр page
+  async (_, { rejectWithValue }) => {
+    // Додаємо параметр page
     try {
-      const response = await axios.get(`/movies-in-cinema?status=comingSoon&page=${page}`);
+      const response = await axios.get(`/movies-in-cinema?status=comingSoon`);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
@@ -33,7 +34,6 @@ export const fetchNewMovies = createAsyncThunk(
     }
   }
 );
-
 
 const moviesUpComming = createSlice({
   name: "moviesUpComming",

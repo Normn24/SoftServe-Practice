@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchNewMovies } from '../../store/newMovie';
-import { RootState, AppDispatch } from '../../store/store';
-import NewMovieCard from '../NewMovieCard';
-import { StatusEnum } from '../../utils/EnumsFile';
-import Loader from '../Loader';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchNewMovies } from "../../store/newMovie";
+import { RootState, AppDispatch } from "../../store/store";
+import NewMovieCard from "../NewMovieCard";
+import { StatusEnum } from "../../utils/EnumsFile";
+import Loader from "../Loader";
 
 const NewMovies: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,11 +14,10 @@ const NewMovies: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // Завантаження даних один раз при монтуванні компонента
   useEffect(() => {
     (async () => {
       setLoading(true);
-      await dispatch(fetchNewMovies(1) as any); // Якщо fetchNewMovies не приймає параметр, виклич без аргументів
+      await dispatch(fetchNewMovies());
       setLoading(false);
     })();
   }, [dispatch]);
@@ -40,9 +39,9 @@ const NewMovies: React.FC = () => {
       className="min-h-screen flex flex-col items-center pt-24"
       style={{
         backgroundImage:
-          'radial-gradient(black 55%, #0000), linear-gradient(135deg, deeppink, indigo, blue, cyan, lime, yellow, orange, red)',
-        backgroundSize: '100% 0.5%, contain',
-        backgroundRepeat: 'repeat-y', // Додаємо повторення по вертикалі для безкінечного фону
+          "radial-gradient(black 55%, #0000), linear-gradient(135deg, deeppink, indigo, blue, cyan, lime, yellow, orange, red)",
+        backgroundSize: "100% 0.5%, contain",
+        backgroundRepeat: "repeat-y",
       }}
     >
       <div className="grid grid-cols-4 gap-6 p-6 w-full max-w-[1400px]">
@@ -50,8 +49,8 @@ const NewMovies: React.FC = () => {
           <NewMovieCard
             key={movie.movieId}
             movieId={movie.movieId}
-            title={movie.tmdbDetails?.title || 'N/A'}
-            description={movie.tmdbDetails?.overview || ''}
+            title={movie.tmdbDetails?.title || "N/A"}
+            description={movie.tmdbDetails?.overview || ""}
             posterPath={movie.tmdbDetails?.poster_path}
           />
         ))}
