@@ -1,9 +1,10 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "../../api/apiClient";
 
 type User = {
     email: string;
     password: string;
+    newPassword?: string;
 };
 
 type ProfileState = {
@@ -18,21 +19,47 @@ const initialState: ProfileState = {
     error: null,
 };
 
-export const fetchProfile = createAsyncThunk<User[]>(
+export const fetchProfile = createAsyncThunk<User[], void, { rejectValue: string }>(
     'profile/fetchProfile',
-    async () => {
-      const apiUrl = 'https://soft-serve-practice-back.vercel.app/api/customers/customer';
-      const res = await axios.get(apiUrl);
-      return Array.isArray(res.data) ? res.data : [res.data];
-      
+    async (_,  { rejectWithValue }) => {
+        try  {
+           const apiUrl = 'https://soft-serve-practice-back.vercel.app/api/customers/customer';
+           const res = await axios.get(apiUrl);
+           return Array.isArray(res.data) ? res.data : [res.data];
+        } catch (e) {
+            console.error(e);
+            return rejectWithValue('Failed to fetch profile');
+        }
     }
 );
+
+export const updatePassword = createAsyncThunk<User[], { password: string; newPassword: string }, {rejectValue: string }>(
+    'profile/updatePassword', 
+    async ({password, newPassword}, {rejectWithValue}) => {
+        try {
+            const res = await axios.put('https://soft-serve-practice-back.vercel.app/api/customers/password', {
+              password,
+              newPassword,
+            });
+            return Array.isArray(res.data) ? res.data : [res.data];
+        } catch(e) {
+          console.error(e)
+          return rejectWithValue(String(e))
+        }
+    }
+)
 
 
 const profileSlice = createSlice({
     name: 'profile',
     initialState,
-    reducers: {},
+    reducers: {
+        updatePasswordLocaly: (state, action: PayloadAction<{newPassword: string}>) => {
+            if (state.user.length > 0) {
+              state.user[0].password = action.payload.newPassword
+            }
+        }
+    },
     extraReducers: (builder) => {
     builder
         .addCase(fetchProfile.pending, (state) => {
@@ -43,7 +70,7 @@ const profileSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         })
-            .addCase(fetchProfile.rejected, (state, action) => {
+        .addCase(fetchProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch profile';
         });
@@ -51,3 +78,4 @@ const profileSlice = createSlice({
 });
 
 export default profileSlice.reducer;
+export const {updatePasswordLocaly} = profileSlice.actions;

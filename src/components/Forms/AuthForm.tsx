@@ -70,6 +70,8 @@ function AuthForm({ mode, handleClose, onSwitchMode }: AuthFormProps) {
         onSwitchMode();
       }
     }
+
+    console.log(response)
   };
 
   return (
