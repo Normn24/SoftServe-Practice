@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { RoutePaths } from "./EnumsFile";
 import MainPage from "../pages/MainPage";
+import NewMoviesPage from "../pages/NewMoviesPage";
 import PrivateRoutes from "./PrivateRoutes";
 import FavoritesPage from "../components/Favorites/favorites";
 import SessionPage from "../pages/SessionPage";
@@ -13,6 +14,7 @@ function AppRoute() {
   return (
     <Routes>
       <Route path={RoutePaths.MAIN} element={<MainPage />} />
+      <Route path={RoutePaths.NewMovies} element={<NewMoviesPage />} />
       <Route path={RoutePaths.MOVIESESSIONS} element={<SessionPage />} />
       <Route
         path={RoutePaths.MOVIESESSIONSBOOK}
@@ -23,9 +25,9 @@ function AppRoute() {
           path={RoutePaths.MOVIESESSIONSPAYMENT}
           element={<PaymentPage />}
         />
-      <Route path = {RoutePaths.PROFILE} element = {<Profile/>}/>
-      <Route path={RoutePaths.ADMIN} element={<AdminPage />} />
-      <Route path={RoutePaths.Favorites} element={<FavoritesPage />} />
+        <Route path={RoutePaths.PROFILE} element={<Profile />} />
+        <Route path={RoutePaths.ADMIN} element={<AdminPage />} />
+        <Route path={RoutePaths.Favorites} element={<FavoritesPage />} />
       </Route>
     </Routes>
   );
