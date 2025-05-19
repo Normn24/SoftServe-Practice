@@ -62,3 +62,17 @@ export interface Movie {
     videos: { key: string; type: string; site: string };
   };
 }
+export interface FavoriteMovie {
+  _id: string;
+  id: number;
+  sessions: Session[];
+
+  title: string;
+  overview: string;
+  poster_path: string;
+  release_date: string;
+  vote_average: number;
+  runtime: number;
+  genres: { id: number; name: string }[];
+  videos: { key: string; type: string; site: string };
+}

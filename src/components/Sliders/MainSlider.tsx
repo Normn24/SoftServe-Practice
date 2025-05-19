@@ -85,7 +85,6 @@ const MainSlider: React.FC = () => {
       className="relative h-screen overflow-hidden bg-black"
     >
       <div className="relative w-full h-full">
-        {/* {status === StatusEnum.LOADING && <Loader />} */}
         {movieInCinema.map((movie, index) => {
           const isActive = index === activeIndex;
           return (

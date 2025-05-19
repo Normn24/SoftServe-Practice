@@ -7,7 +7,8 @@ import movieSearchSlice from "./movieSearch";
 import moviesUpComming from "./newMovie";
 import sessionsSlice from "./sessionsSlice";
 import bookingSlice from "./bookingSlice";
-import profileSlice from './profileSlice'
+import profileSlice from "./profileSlice";
+import favoritesSlice from "./favoritesSlice";
 
 const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ const store = configureStore({
     moviesUpComming: moviesUpComming,
     sessions: sessionsSlice,
     booking: bookingSlice,
+    favorites: favoritesSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(checkTokenExpiryMiddleware),

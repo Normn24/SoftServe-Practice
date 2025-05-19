@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import {  NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaUser, FaBars } from "react-icons/fa";
 import { ImVideoCamera } from "react-icons/im";
 import ModalWindow from "../ModalWindow";
@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const token = useSelector((state: RootState) => state?.auth.token);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -61,9 +61,28 @@ const Navbar: React.FC = () => {
           >
             In Live
           </NavLink>
-          <NavLink to="/online" className="text-gray-400 hover:text-white">
+          <NavLink
+            to="/online"
+            className={({ isActive }) =>
+              isActive
+                ? "relative text-white after:absolute after:-bottom-2.5 after:left-0 after:w-full after:h-1 after:bg-yellow-400 after:rounded-md"
+                : "text-gray-400 hover:text-white"
+            }
+          >
             New page
           </NavLink>
+          {token && (
+            <NavLink
+              to="/favorites"
+              className={({ isActive }) =>
+                isActive
+                  ? "relative text-white after:absolute after:-bottom-2.5 after:left-0 after:w-full after:h-1 after:bg-yellow-400 after:rounded-md"
+                  : "text-gray-400 hover:text-white"
+              }
+            >
+              Favorites
+            </NavLink>
+          )}
         </nav>
 
         <div className="flex items-center min-w-[100px] relative">
@@ -80,7 +99,10 @@ const Navbar: React.FC = () => {
                 {showMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-50">
                     <ul className="text-sm py-2 w-full">
-                      <li onClick={() => navigate('/profile')} className="px-4 py-2 hover:bg-gray-700 cursor-pointer w-full">
+                      <li
+                        onClick={() => navigate("/profile")}
+                        className="px-4 py-2 hover:bg-gray-700 cursor-pointer w-full"
+                      >
                         Profile
                       </li>
                       <li
