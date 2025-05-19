@@ -11,4 +11,11 @@ export enum StatusEnum {
 export enum RoutePaths {
   MAIN = "/",
   MOVIE = "/movies/:movieId",
+  NewMovies = "/coming-soon",
+  Favorites = "/favorites",
+  MOVIESESSIONS = "/:movieId/sessions",
+  MOVIESESSIONSBOOK = "/:movieId/sessions/:sessionId",
+  MOVIESESSIONSPAYMENT = "/checkout/:movieId/:sessionId",
+  ADMIN = "/admin",
+  PROFILE = "/profile",
 }

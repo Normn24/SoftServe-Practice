@@ -1,13 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import MainSlider from "../components/Sliders/MainSlider";
 
 const MainPage: React.FC = () => {
-  return (
-    <div>
-      <p>MainPage</p>
-      <Link to={"/movie/:id"}>Go to movie</Link>
-    </div>
-  );
+  return <MainSlider />;
 };
-
 export default MainPage;

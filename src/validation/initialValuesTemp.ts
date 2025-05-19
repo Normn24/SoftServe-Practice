@@ -1,6 +1,6 @@
 export const initialValuesTemp = {
   registration: {
-    loginOrEmail: "",
+    email: "",
     password: "",
   },
   login: {

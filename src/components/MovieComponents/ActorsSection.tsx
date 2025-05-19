@@ -48,7 +48,7 @@ export const ActorsSection: FC<Props> = ({ cast }) => {
             if (
               prevRef.current &&
               nextRef.current &&
-              swiper.params.navigation
+              swiper.params?.navigation
             ) {
               swiper.params.navigation.prevEl = prevRef.current;
               swiper.params.navigation.nextEl = nextRef.current;

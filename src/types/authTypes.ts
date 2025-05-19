@@ -13,8 +13,7 @@ export interface ErrorResponse {
 
 export interface AuthFormProps {
   handleClose: () => void;
-  onSignUpClick?: () => void;
-  onLoginClick?: () => void;
+  onSwitchMode?: () => void;
 }
 
 export interface LoginPayload {
@@ -23,6 +22,57 @@ export interface LoginPayload {
 }
 
 export interface RegisterPayload {
-  loginOrEmail: string;
+  email: string;
   password: string;
+}
+
+export interface Session {
+  sessionId?: number;
+  dateTime: string;
+  price: number;
+  seats: Seat[];
+  _id: string;
+}
+export interface SessionData {
+  session: {
+    dateTime: string;
+    price: number;
+    seats: Seat[];
+    _id: string;
+  };
+}
+
+export interface Seat {
+  seatNumber: number;
+  isBooked: boolean;
+  _id: string;
+}
+export interface Movie {
+  _id: string;
+  movieId: number;
+  sessions: Session[];
+  tmdbDetails: {
+    title: string;
+    overview: string;
+    poster_path: string;
+    release_date: string;
+    vote_average: number;
+    runtime: number;
+    genres: { id: number; name: string }[];
+    videos: { key: string; type: string; site: string };
+  };
+}
+export interface FavoriteMovie {
+  _id: string;
+  id: number;
+  sessions: Session[];
+
+  title: string;
+  overview: string;
+  poster_path: string;
+  release_date: string;
+  vote_average: number;
+  runtime: number;
+  genres: { id: number; name: string }[];
+  videos: { key: string; type: string; site: string };
 }

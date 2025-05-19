@@ -31,7 +31,7 @@ function ModalWindow({ open, children, onClose }: ModalWindowProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black-100 bg-opacity-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 bg-opacity-10"
       onClick={onClose}
       role="presentation"
     >
