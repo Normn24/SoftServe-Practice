@@ -1,49 +1,98 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { ActorsSection } from "../components/MovieComponents/ActorsSection";
 import { BackdropSection } from "../components/MovieComponents/BackdropSection";
 import { MovieDetailsSection } from "../components/MovieComponents/MovieDetailsSection";
 import { TrailerSection } from "../components/MovieComponents/TrailerSection";
 import { fetchMovie } from "../store/movieSlice";
 import { AppDispatch, RootState } from "../store/store";
+import Loader from "../components/Loader";
+import { IoTicket } from "react-icons/io5";
+import { RoutePaths } from "../utils/EnumsFile";
+import { FaHeart } from "react-icons/fa";
+import { addFavorite } from "../store/favoritesSlice";
+
+const formatDateToYYYYMMDD = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 const MoviePage: React.FC = () => {
   const { movieId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { movie, loading, error } = useSelector(
-    (state: RootState) => state.movie
-  );
+  const { movie, loading } = useSelector((state: RootState) => state.movie);
   useEffect(() => {
     if (movieId) dispatch(fetchMovie(+movieId));
   }, [movieId, dispatch]);
-  const obj = movie;
 
-  return obj ? (
+  if (loading || !movie)
+    return (
+      <div className="flex items-center justify-center h-screen bg-black text-white">
+        <Loader />
+      </div>
+    );
+
+  const handleAddToFavorite = () => {
+    if (movieId) dispatch(addFavorite(+movieId));
+  };
+
+  const today = new Date();
+  const futureSessions = movie?.sessions
+    .filter((session) => new Date(session.dateTime) >= today)
+    .sort(
+      (a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
+    );
+  const session = new Date(futureSessions[0].dateTime);
+  const dateSession = formatDateToYYYYMMDD(session);
+  const sessionsPath = RoutePaths.MOVIESESSIONS.replace(
+    ":movieId",
+    movieId ?? ""
+  );
+  const linkToSessions = sessionsPath
+    ? `${sessionsPath}?date=${dateSession}`
+    : sessionsPath;
+  return (
     <div className="h-screen">
       <BackdropSection
-        backdrop_path={obj.backdrop_path}
-        title={obj.title}
-        original_title={obj.original_title}
-        overview={obj.overview}
-        release_date={obj.release_date}
+        backdrop_path={movie.backdrop_path}
+        title={movie.title}
+        original_title={movie.original_title}
+        overview={movie.overview}
+        release_date={movie.release_date}
       />
       <MovieDetailsSection
-        genres={obj.genres}
-        origin_country={obj.origin_country}
-        overview={obj.overview}
-        poster_path={obj.poster_path}
-        production_companies={obj.production_companies}
-        release_date={obj.release_date}
-        runtime={obj.runtime}
-        spoken_languages={obj.spoken_languages}
+        genres={movie.genres}
+        origin_country={movie.origin_country}
+        overview={movie.overview}
+        poster_path={movie.poster_path}
+        production_companies={movie.production_companies}
+        release_date={movie.release_date}
+        runtime={movie.runtime}
+        spoken_languages={movie.spoken_languages}
       />
-      <TrailerSection videoKey={obj.videos} />
-      <ActorsSection cast={obj.cast} />
+      <div className="fixed z-20 bottom-12 left-12 flex gap-4">
+        <NavLink
+          to={linkToSessions}
+          className=" w-max bg-yellow-400 hover:bg-yellow-500 text-black py-4 px-6 rounded-full transition font-bold text-xl flex items-center gap-2"
+        >
+          <IoTicket style={{ width: "30px", height: "30px" }} />
+          Select sessions
+        </NavLink>
+        <button
+          onClick={handleAddToFavorite}
+          className="w-16 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-gray-700 transition-colors focus:outline-none ring-2 ring-yellow-500"
+          aria-label="Open search"
+        >
+          <FaHeart className="text-white text-sm" />
+        </button>
+      </div>
+      <TrailerSection videoKey={movie.videos} />
+      <ActorsSection cast={movie.cast} />
     </div>
-  ) : (
-    <div>Fetch failed</div>
   );
 };
 

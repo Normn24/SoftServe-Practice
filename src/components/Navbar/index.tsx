@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaUser, FaBars } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { ImVideoCamera } from "react-icons/im";
 import ModalWindow from "../ModalWindow";
 import LogoutForm from "../Forms/LogoutForm";
@@ -120,10 +120,6 @@ const Navbar: React.FC = () => {
                 <FaUser className="text-white text-sm" />
               </button>
             )}
-
-            <button className="w-12 h-12  rounded-full bg-gray-800 flex items-center justify-center">
-              <FaBars className="text-white text-sm" />
-            </button>
           </div>
         </div>
       </header>

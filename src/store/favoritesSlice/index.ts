@@ -1,16 +1,19 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "../../api/apiClient";
 import { FavoriteMovie } from "../../types/authTypes";
-/*interface Movie {
-  id: number;
-  title: string;
-  poster: string;
-}*/
 
 export const fetchFavorites = createAsyncThunk(
   "favorites/fetchFavorites",
   async () => {
     const response = await axios.get<FavoriteMovie[]>(`/favorites`);
+    return response.data;
+  }
+);
+
+export const addFavorite = createAsyncThunk(
+  "favorites/addFavorite",
+  async (id: number) => {
+    const response = await axios.post(`/favorites/${id}`);
     return response.data;
   }
 );
@@ -53,6 +56,13 @@ const favoritesSlice = createSlice({
         }
       )
       .addCase(fetchFavorites.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Fetch failed";
+      })
+      .addCase(addFavorite.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(addFavorite.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Fetch failed";
       })

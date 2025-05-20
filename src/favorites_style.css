@@ -1,13 +1,3 @@
-/* Глобальні стилі */
-body {
-  background: linear-gradient(to right, #0f0f0f, #1c1c1c);
-  font-family: 'Segoe UI', 'Roboto', sans-serif;
-  color: #ffffff;
-  margin: 0;
-  padding: 0;
-}
-
-/* Шапка */
 .favorites-hero {
   background: url('https://images.pexels.com/photos/7991158/pexels-photo-7991158.jpeg?cs=srgb&dl=pexels-tima-miroshnichenko-7991158.jpg&fm=jpg') center/cover no-repeat;
   height: 300px;

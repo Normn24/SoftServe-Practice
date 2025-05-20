@@ -16,38 +16,39 @@ const initialState: MovieState = {
 
 export const fetchMovie = createAsyncThunk<Movie, number>(
   "movies/fetchMovie",
-  async (movieId, { rejectWithValue }) => {
-    const response = await axios.get(`movies/${movieId}`);
+  async (movieId) => {
+    const response = await axios.get(`movies-in-cinema/${movieId}`);
     const data = response.data;
     const movie: Movie = {
-      id: data.id,
-      title: data.title,
-      overview: data.overview,
-      release_date: data.release_date,
-      runtime: data.runtime,
-      poster_path: data.poster_path,
-      backdrop_path: data.backdrop_path,
-      original_language: data.original_language,
-      original_title: data.original_title,
-      popularity: data.popularity,
-      vote_average: data.vote_average,
-      vote_count: data.vote_count,
-      adult: data.adult,
-      genres: data.genres,
-      origin_country: data.origin_country,
-      production_companies: data.production_companies.map(
+      id: data.tmdbDetails.id,
+      title: data.tmdbDetails.title,
+      overview: data.tmdbDetails.overview,
+      release_date: data.tmdbDetails.release_date,
+      runtime: data.tmdbDetails.runtime,
+      poster_path: data.tmdbDetails.poster_path,
+      backdrop_path: data.tmdbDetails.backdrop_path,
+      original_language: data.tmdbDetails.original_language,
+      original_title: data.tmdbDetails.original_title,
+      popularity: data.tmdbDetails.popularity,
+      vote_average: data.tmdbDetails.vote_average,
+      vote_count: data.tmdbDetails.vote_count,
+      adult: data.tmdbDetails.adult,
+      genres: data.tmdbDetails.genres,
+      origin_country: data.tmdbDetails.origin_country,
+      production_companies: data.tmdbDetails.production_companies.map(
         (company: ProductionCompany) => ({
           id: company.id,
           name: company.name,
           logo_path: company.logo_path,
         })
       ),
-      spoken_languages: data.spoken_languages.map(
+      spoken_languages: data.tmdbDetails.spoken_languages.map(
         (lang: { english_name: string }) => lang.english_name
       ),
-      recommendations: data.recommendations,
-      videos: data.videos.key,
-      cast: data.cast,
+      recommendations: data.tmdbDetails.recommendations,
+      videos: data.tmdbDetails.videos.key,
+      cast: data.tmdbDetails.cast,
+      sessions: data.sessions,
     };
     return movie;
   }

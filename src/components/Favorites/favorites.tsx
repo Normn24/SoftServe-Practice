@@ -19,7 +19,7 @@ const FavoritesPage: React.FC = () => {
     dispatch(deleteFavorite(id));
   };
 
-  if (loading)
+  if (loading || !items)
     return (
       <div className="flex items-center justify-center h-screen bg-black text-white">
         <Loader />

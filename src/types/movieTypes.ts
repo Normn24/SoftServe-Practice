@@ -1,3 +1,5 @@
+import { Session } from "./authTypes";
+
 export interface Movie {
   adult: boolean;
   backdrop_path: string;
@@ -19,6 +21,7 @@ export interface Movie {
   spoken_languages: string[];
   videos: string;
   cast: Actor[];
+  sessions: Session[];
 }
 
 export interface Actor {
