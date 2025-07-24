@@ -41,7 +41,7 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="fixed z-50 top-0 w-full bg-gradient-to-b from-[#000] to-transparent text-white px-8 py-8 flex justify-between items-center">
+      <header className="fixed z-50 top-0 w-full bg-gradient-to-b from-[#000000] to-transparent text-white px-8 py-8 flex justify-between items-center">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-1">
             <ImVideoCamera className="w-10 h-8 fill-amber-50" />

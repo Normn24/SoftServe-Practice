@@ -160,7 +160,7 @@ const SeatSelectionPage: React.FC = () => {
         <div className="flex items-center mb-6">
           <button
             onClick={handleGoBack}
-            className="mr-4 text-white transition duration-200 w-12 h-12  rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700"
+            className="mr-4 text-white transition duration-200 w-12 h-12 backdrop-blur-sm rounded-full bg-white/20 flex items-center justify-center hover:bg-gray-100/40 hover:border-1 hover:border-yellow-500"
           >
             <FaArrowLeft />
           </button>

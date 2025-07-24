@@ -46,9 +46,10 @@ export const fetchMovie = createAsyncThunk<Movie, number>(
         (lang: { english_name: string }) => lang.english_name
       ),
       recommendations: data.tmdbDetails.recommendations,
-      videos: data.tmdbDetails.videos.key,
+      videos: data.tmdbDetails.videos,
       cast: data.tmdbDetails.cast,
       sessions: data.sessions,
+      tagline: data.tmdbDetails.tagline || "",
     };
     return movie;
   }

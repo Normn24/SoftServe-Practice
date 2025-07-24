@@ -1,5 +1,3 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react'
 import Spinner from '../Spinner/Spinner';
 import SessionCard from '../Card/SessionCard';
 import { useDispatch, useSelector } from 'react-redux';

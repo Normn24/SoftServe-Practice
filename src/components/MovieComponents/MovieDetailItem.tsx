@@ -22,8 +22,8 @@ export const MovieDetailItem: FC<Props> = ({ title, value }) => {
     textContent = value;
   }
   return (
-    <div className="mb-3">
-      <p className="text-[18px] text-gray-400">{title}</p>
+    <div className="mb-6">
+      <p className="text-[18px] text-gray-400 leading-none pb-1">{title}</p>
       <p className="text-[18px] text-white">{textContent}</p>
     </div>
   );

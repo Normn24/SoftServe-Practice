@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Session } from "../../types/authTypes";
 import { IoTicket } from "react-icons/io5";
-import YouTube from "react-youtube";
+// import YouTube from "react-youtube";
+import ReactPlayer from "react-player";
 import { NavLink } from "react-router-dom";
 import { RoutePaths } from "../../utils/EnumsFile";
 
@@ -40,7 +41,6 @@ const MovieCard: React.FC<MovieCardProps> = ({
   videos,
 }) => {
   const [showTrailer, setShowTrailer] = useState(false);
-
   const closestSessionInfo = useMemo(() => {
     if (!sessions || sessions.length === 0) {
       return { label: "", times: [], dateString: null };
@@ -56,7 +56,6 @@ const MovieCard: React.FC<MovieCardProps> = ({
     const todaySessions = sessions.filter(
       (session) => new Date(session.dateTime).toDateString() === todayDateString
     );
-    console.log(sessions);
     if (todaySessions.length > 0) {
       return {
         label: "Sessions today:",
@@ -143,10 +142,15 @@ const MovieCard: React.FC<MovieCardProps> = ({
   return (
     <div className="relative w-full h-screen bg-black text-white overflow-hidden">
       <NavLink to={`movies/${movieId}`}>
-        <div className="relative z-10 flex justify-between items-end h-full px-8 py-12 bg-gradient-to-t from-[#000] to-transparent">
+        <div
+          className="relative z-10 flex justify-between items-end h-full px-8 py-12 
+          bg-gradient-to-t from-[#000000] to-40% to-transparent"
+        >
           <div className="max-w-3xl">
             <h1 className="text-6xl font-bold mb-4">{title}</h1>
-            <p className="text-lg mb-20 opacity-80">{description}</p>
+            <p className="text-lg mb-20 opacity-80">
+              {description.split(/[.!?]/)[0]}
+            </p>
           </div>
           <div className="flex flex-col gap-4 max-w-full items-end">
             <div className="flex items-center gap-6 mt-6 justify-end">
@@ -182,24 +186,16 @@ const MovieCard: React.FC<MovieCardProps> = ({
           </div>
         </div>
         {showTrailer && videos && typeof videos.key === "string" ? (
-          <div className="absolute inset-0 z-0 ">
-            <YouTube
-              videoId={videos.key}
-              opts={{
-                width: "100%",
-                height: "100%",
-                playerVars: {
-                  autoplay: 1,
-                  controls: 0,
-                  rel: 0,
-                  showinfo: 0,
-                  mute: 1,
-                  loop: 1,
-                  cc_load_policy: 0,
-                  iv_load_policy: 3,
-                },
-              }}
-              className="w-full h-full object-cover"
+          <div className="absolute inset-0 z-0 pt-[56.25%] top-[50%] translate-y-[-50%]">
+            <ReactPlayer
+              src={`https://www.youtube.com/watch?v=${videos.key}`}
+              playing
+              controls={false}
+              loop
+              muted
+              className="absolute top-0 left-0 object-fill"
+              width={"100%"}
+              height={"100%"}
             />
           </div>
         ) : (

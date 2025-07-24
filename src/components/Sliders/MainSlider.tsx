@@ -11,8 +11,10 @@ import { fetchAllMovies } from "../../store/allMovies";
 
 const MainSlider: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [activeIndex, setActiveIndex] = useState(0);
-
+  const [activeIndex, setActiveIndex] = useState(() => {
+    const saved = localStorage.getItem("activeSlideIndex");
+    return saved ? Number(saved) : 0;
+  });
   const { movieInCinema, status } = useSelector(
     (state: RootState) => state.movieInCinema
   );
@@ -21,6 +23,17 @@ const MainSlider: React.FC = () => {
     dispatch(fetchMovies());
     dispatch(fetchAllMovies());
   }, [dispatch]);
+
+  useEffect(() => {
+    const handleSaveActiveIndex = () => {
+      localStorage.setItem("activeSlideIndex", String(activeIndex));
+    };
+    window.addEventListener("beforeunload", handleSaveActiveIndex);
+    return () => {
+      handleSaveActiveIndex();
+      window.removeEventListener("beforeunload", handleSaveActiveIndex);
+    };
+  }, [activeIndex]);
 
   const changeSlide = useCallback(
     (direction: "up" | "down") => {
@@ -109,13 +122,13 @@ const MainSlider: React.FC = () => {
                   movieId={String(movie.movieId)}
                   title={movie.tmdbDetails?.title || "N/A"}
                   description={movie.tmdbDetails?.overview || ""}
-                  posterPath={movie.tmdbDetails?.poster_path}
+                  posterPath={movie.tmdbDetails?.backdrop_path}
                   imdb={movie.tmdbDetails?.vote_average}
                   year={movie.tmdbDetails?.release_date?.split("-")[0] || ""}
                   genre={movie.tmdbDetails?.genres?.[0]?.name || ""}
                   duration={movie.tmdbDetails?.runtime}
                   sessions={movie.sessions || []}
-                  videos={movie.tmdbDetails?.videos || null}
+                  videos={movie.tmdbDetails?.videos[1] || null}
                   isActive={isActive}
                 />
               </div>

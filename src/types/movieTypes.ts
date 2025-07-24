@@ -19,9 +19,10 @@ export interface Movie {
   release_date: string;
   runtime: number;
   spoken_languages: string[];
-  videos: string;
+  videos: Array<{ key: string; type: string; site: string }>;
   cast: Actor[];
   sessions: Session[];
+  tagline: string;
 }
 
 export interface Actor {

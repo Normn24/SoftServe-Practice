@@ -3,5 +3,9 @@ interface Props {
 }
 
 export const GenreItem = ({ genre }: Props) => {
-  return <div className="bg-white/30 rounded-4xl text-center p-3">{genre}</div>;
+  return (
+    <div className="bg-white/15 rounded-4xl text-center py-2 px-4 font-semibold">
+      {genre}
+    </div>
+  );
 };

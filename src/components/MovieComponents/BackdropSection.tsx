@@ -3,33 +3,46 @@ import { FC } from "react";
 interface Props {
   backdrop_path: string;
   title: string;
-  original_title: string;
   overview: string;
-  release_date: string;
+  imdb: number;
+  year: string;
+  genre: string;
+  duration: number;
 }
 export const BackdropSection: FC<Props> = ({
   backdrop_path,
   title,
-  original_title,
   overview,
-  release_date,
+  imdb,
+  year,
+  genre,
+  duration,
 }) => {
   return (
-    <div
-      style={{
-        background: `linear-gradient(to top, rgba(0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 50%), url(https://image.tmdb.org/t/p/original//${backdrop_path})`,
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
-      className="w-full h-10/12 relative"
-    >
-      <div className="h-1/3 max-w-5/12 absolute bottom-1/12 left-[5%] flex flex-col justify-end gap-3">
-        <h1>{title}</h1>
-        <p>{original_title}</p>
-        <p>{overview}</p>
-      </div>
-      <div className="absolute bottom-1/12 right-0 m-5">
-        <p className="">First release: {release_date}</p>
+    <div className="w-full h-[740px] relative z-10">
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-70 "
+        style={{
+          backgroundImage: `url(https://image.tmdb.org/t/p/original${backdrop_path})`,
+        }}
+      />
+
+      <div className="w-full absolute bottom-0 p-8 flex justify-between items-end">
+        <div className="flex flex-col justify-end gap-3">
+          <h1 className="text-6xl font-bold text-white">{title}</h1>
+          <p className="text-lg opacity-80 text-white font-medium">
+            {overview}
+          </p>
+        </div>
+        <div className="flex flex-col gap-4 items-end text-white">
+          <div className="flex flex-wrap gap-4 text-md opacity-80 justify-end">
+            <span>{imdb.toFixed(1)} IMDB</span>•<span>{year}</span>•
+            <span>{genre}</span>•<span>{duration} min</span>
+          </div>
+          <div className="flex flex-wrap gap-4 text-md opacity-80 justify-end">
+            <span>2D</span>•<span>Cinetech+</span>
+          </div>
+        </div>
       </div>
     </div>
   );

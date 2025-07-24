@@ -55,11 +55,12 @@ export interface Movie {
     title: string;
     overview: string;
     poster_path: string;
+    backdrop_path: string;
     release_date: string;
     vote_average: number;
     runtime: number;
     genres: { id: number; name: string }[];
-    videos: { key: string; type: string; site: string };
+    videos: Array<{ key: string; type: string; site: string }>;
   };
 }
 export interface FavoriteMovie {
