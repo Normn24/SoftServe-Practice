@@ -12,6 +12,7 @@ import { IoTicket } from "react-icons/io5";
 import { RoutePaths } from "../utils/EnumsFile";
 import { FaHeart, FaHome } from "react-icons/fa";
 import { addFavorite } from "../store/favoritesSlice";
+import OtherMovies from "../components/MovieComponents/OtherMovies";
 
 const formatDateToYYYYMMDD = (date: Date): string => {
   const year = date.getFullYear();
@@ -56,7 +57,7 @@ const MoviePage: React.FC = () => {
     : sessionsPath;
 
   return (
-    <div className="relative h-full flex flex-col gap-6 ">
+    <div className="relative h-full flex flex-col gap-6 mb-32">
       <BackdropSection
         backdrop_path={movie.backdrop_path}
         title={movie.title}
@@ -103,6 +104,7 @@ const MoviePage: React.FC = () => {
       </div>
       <TrailerSection videos={movie.videos} />
       <ActorsSection cast={movie.cast} />
+      <OtherMovies movieId={movie.id} />
     </div>
   );
 };

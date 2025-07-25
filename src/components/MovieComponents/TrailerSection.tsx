@@ -16,7 +16,7 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
-    <div className="max-w-[80rem] w-[80rem] m-auto mb-14 mt-6">
+    <div className="max-w-[80rem] w-full m-auto mb-14 mt-6">
       <h2 className="text-3xl mb-6 font-bold">Film promotion</h2>
       <div className="flex gap-6">
         {videos.map((video, idx) => (
