@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Session } from "../../types/authTypes";
 import { IoTicket } from "react-icons/io5";
-// import YouTube from "react-youtube";
 import ReactPlayer from "react-player";
 import { NavLink } from "react-router-dom";
 import { RoutePaths } from "../../utils/EnumsFile";
@@ -185,12 +184,13 @@ const MovieCard: React.FC<MovieCardProps> = ({
             </div>
           </div>
         </div>
+
         {showTrailer && videos && typeof videos.key === "string" ? (
           <div className="absolute inset-0 z-0 pt-[56.25%] top-[50%] translate-y-[-50%]">
             <ReactPlayer
               src={`https://www.youtube.com/watch?v=${videos.key}`}
               playing
-              controls={false}
+              controls
               loop
               muted
               className="absolute top-0 left-0 object-fill"

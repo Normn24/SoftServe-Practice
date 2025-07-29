@@ -8,11 +8,12 @@ import {
 } from "../store/sessionsSlice";
 import { StatusEnum } from "../utils/EnumsFile";
 import Loader from "../components/Loader";
-import { Seat, Movie } from "../types/authTypes";
+import { Seat } from "../types/authTypes";
 import SeatGrid from "../components/SeatSelection/SeatGrid";
 import { FaArrowLeft, FaInfoCircle } from "react-icons/fa";
 import ModalWindow from "../components/ModalWindow";
 import AuthForm from "../components/Forms/AuthForm";
+import { fetchMovie } from "../store/movieSlice";
 
 const formatSessionTime = (dateTimeString: string | number): string => {
   return new Date(dateTimeString).toLocaleTimeString("en-GB", {
@@ -34,24 +35,26 @@ const SeatSelectionPage: React.FC = () => {
   }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { currentSession, status, error } = useSelector(
+  const { currentSession, error } = useSelector(
     (state: RootState) => state.sessions
   );
   const token = useSelector((state: RootState) => state?.auth.token);
-  const { allMovie } = useSelector((state: RootState) => state.allMovies);
-  const currentMovie = useMemo(() => {
-    return allMovie.find(
-      (movie: Movie) => String(movie.movieId) === String(movieId)
-    );
-  }, [allMovie, movieId]);
+  const { movie, status } = useSelector((state: RootState) => state.movie);
+
   const [selectedSeatIds, setSelectedSeatIds] = useState<string[]>([]);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>("login");
+
+  useEffect(() => {
+    if (status === StatusEnum.IDLE && movieId) {
+      dispatch(fetchMovie(+movieId));
+    }
+  }, [dispatch, status, movieId]);
+
   useEffect(() => {
     if (movieId && sessionId) {
       dispatch(fetchSingleSession({ movieId, sessionId }));
     }
-
     return () => {
       dispatch(clearCurrentSession());
     };
@@ -113,8 +116,8 @@ const SeatSelectionPage: React.FC = () => {
         selectedSeatDetails,
         totalPrice,
         totalTickets,
-        movieTitle: currentMovie?.tmdbDetails.title,
-        moviePoster: currentMovie?.tmdbDetails.poster_path,
+        movieTitle: movie?.title,
+        moviePoster: movie?.poster_path,
         sessionTime: formatSessionTime(currentSession.dateTime),
         sessionDate: new Date(currentSession.dateTime).toLocaleDateString(
           "en-GB",
@@ -175,12 +178,10 @@ const SeatSelectionPage: React.FC = () => {
         <div className="flex-grow flex flex-col lg:flex-row gap-10">
           <div className="flex-grow lg:w-2/3">
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-1">
-                {currentMovie?.tmdbDetails.title}
-              </h2>
+              <h2 className="text-2xl font-bold mb-1">{movie?.title}</h2>
               <p className="text-gray-400 text-sm">
-                {sessionDate} • {sessionTime} •{" "}
-                {currentMovie?.tmdbDetails?.runtime} min • 2D • Cinetech+
+                {sessionDate} • {sessionTime} • {movie?.runtime} min • 2D •
+                Cinetech+
               </p>
             </div>
             <div className="w-[calc(100%-120px)] h-0 border-b-[50px] border-l-[15px] border-r-[15px] border-b-white border-l-transparent border-r-transparent m-auto mb-11 rotate-180 shadow-[0px_-27px_32px_-23px_#ffffff]" />

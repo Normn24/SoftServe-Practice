@@ -103,17 +103,16 @@ const PaymentPage: React.FC = () => {
     navigate(-1);
   };
 
-  const posterBaseUrl = "https://image.tmdb.org/t/p/original";
   if (!selectedSeatDetails || selectedSeatDetails.length === 0) {
     return (
       <div className="mt-28 p-4 text-white max-w-lg m-auto text-center">
-        <h1 className="text-2xl font-semibold mb-4">Помилка</h1>
+        <h1 className="text-2xl font-semibold mb-4">Error</h1>
         <p className="text-gray-400 mb-4">
           No seats have been selected for booking or session data is
           missing.Checkout
         </p>
         <button
-          onClick={() => navigate(`/movies/${movieId}/sessions/${sessionId}`)}
+          onClick={() => navigate(`/${movieId}/sessions/${sessionId}`)}
           className="bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded hover:bg-yellow-600"
         >
           Back to seat selection
@@ -137,26 +136,22 @@ const PaymentPage: React.FC = () => {
       </div>
       <div className="flex gap-10 flex-col max-w-[600px] m-auto mt-0 mb-0">
         <div className="flex flex-col">
-          <div className="flex items-end">
+          <div className="flex items-center gap-4">
             <img
-              src={
-                moviePoster
-                  ? `${posterBaseUrl}${moviePoster}`
-                  : "https://via.placeholder.com/40x60.png?text=N/A"
-              }
+              src={`https://image.tmdb.org/t/p/original${moviePoster}`}
               alt={movieTitle}
-              className="w-28 h-42 object-cover rounded-sm mr-4 flex-shrink-0 bg-gray-700"
+              className="w-28 h-42 object-cover rounded-sm flex-shrink-0 bg-gray-700"
             />
-            <div className="flex flex-col text-gray-400 text-md w-full">
-              <h3 className="text-white text-5xl font-medium truncate leading-tight">
+            <div className="flex flex-col text-gray-400 text-md w-[calc(100%-128px)]">
+              <h3 className="text-white text-3xl font-medium truncate leading-tight">
                 {movieTitle}
               </h3>
               <hr className="mt-4 mb-4" />
-              <p>
+              <p className="text-lg">
                 {sessionDate} • {sessionTime}
               </p>
               <hr className="mt-4 mb-4" />
-              <p>
+              <p className="text-lg">
                 Number of tickets:{" "}
                 <span className="font-bold text-white">
                   {selectedSeatDetails.length}

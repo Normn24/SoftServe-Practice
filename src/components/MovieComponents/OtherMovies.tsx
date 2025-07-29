@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactPlayer from "react-player";
 import { NavLink } from "react-router-dom";
 
@@ -8,15 +8,36 @@ const OtherMovies: React.FC<{ movieId: number }> = ({ movieId }) => {
   const { movieInCinema } = useSelector(
     (state: RootState) => state.movieInCinema
   );
-  const number = useRef(
-    Math.floor(Math.random() * (movieInCinema.length - 1 - 0) + 0)
-  );
-  const otherMovies = movieInCinema
-    ? movieInCinema
-        .filter((m) => +m._id !== movieId)
-        .slice(number.current, number.current + 2)
-    : [];
+  const [showTrailer, setShowTrailer] = useState(false);
+
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
+  const otherMovies = useMemo(() => {
+    if (!movieInCinema || movieInCinema.length <= 1) {
+      return [];
+    }
+    const filteredMovies = movieInCinema.filter((m) => +m.movieId !== movieId);
+    if (filteredMovies.length === 0) {
+      return [];
+    }
+    const maxStartIndex = Math.max(0, filteredMovies.length - 2);
+    const startIndex = Math.floor(Math.random() * (maxStartIndex + 1));
+
+    return filteredMovies.slice(startIndex, startIndex + 2);
+  }, [movieInCinema, movieId]);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (hoveredIdx !== null) {
+      timer = setTimeout(() => {
+        setShowTrailer(true);
+      }, 500);
+    } else {
+      setShowTrailer(false);
+    }
+    return () => clearTimeout(timer);
+  }, [hoveredIdx]);
+
   return (
     <div className="relative h-full">
       {otherMovies.length > 0 && (
@@ -46,7 +67,7 @@ const OtherMovies: React.FC<{ movieId: number }> = ({ movieId }) => {
                         }}
                       />
                     </div>
-                    {hoveredIdx === idx && (
+                    {hoveredIdx === idx && showTrailer && (
                       <div className="absolute inset-0 z-1">
                         <ReactPlayer
                           src={`https://www.youtube.com/watch?v=${film.tmdbDetails.videos[0].key}`}
@@ -67,12 +88,12 @@ const OtherMovies: React.FC<{ movieId: number }> = ({ movieId }) => {
                       </div>
                     )}
                     <div
-                      className={`absolute sm:h-full w-[70%] right-0 sm:top-0 sm:bottom-auto bottom-0 sm:pl-12 sm:py-4 p-8 z-2 flex flex-col justify-end transition  duration-300 ease-in-out  
+                      className={`absolute sm:h-full w-[70%] right-0 sm:top-0 sm:bottom-auto bottom-0 sm:pl-12 sm:py-4 p-8 z-2 flex flex-col justify-end transition  duration-1000 ease-in-out  
                        ${hoveredIdx === idx && "-translate-x-53 -translate-y-0"}
                     `}
                     >
                       <div
-                        className={`uppercase font-cervo sm:font-bold mb-2 font-normal sm:mb-3 text-4xl w-full transition-all duration-300
+                        className={`uppercase font-cervo sm:font-bold mb-2 font-normal sm:mb-3 text-4xl w-full transition-all duration-300 text-shadow-[2px_5px_10px_rgba(0,0,0,1)]
                         ${hoveredIdx === idx && " text-white text-[24px]"}
                       `}
                       >
@@ -80,7 +101,7 @@ const OtherMovies: React.FC<{ movieId: number }> = ({ movieId }) => {
                       </div>
 
                       <div
-                        className={`flex flex-col gap-1 items-start text-white transition duration-300 ease-in-out ${
+                        className={`flex flex-col gap-1 items-start text-white transition duration-1000 ease-in-out ${
                           hoveredIdx === idx && "hidden"
                         }`}
                       >

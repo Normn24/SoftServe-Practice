@@ -9,7 +9,7 @@ import { fetchMovie } from "../store/movieSlice";
 import { AppDispatch, RootState } from "../store/store";
 import Loader from "../components/Loader";
 import { IoTicket } from "react-icons/io5";
-import { RoutePaths } from "../utils/EnumsFile";
+import { RoutePaths, StatusEnum } from "../utils/EnumsFile";
 import { FaHeart, FaHome } from "react-icons/fa";
 import { addFavorite } from "../store/favoritesSlice";
 import OtherMovies from "../components/MovieComponents/OtherMovies";
@@ -24,12 +24,12 @@ const formatDateToYYYYMMDD = (date: Date): string => {
 const MoviePage: React.FC = () => {
   const { movieId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { movie, loading } = useSelector((state: RootState) => state.movie);
+  const { movie, status } = useSelector((state: RootState) => state.movie);
   useEffect(() => {
     if (movieId) dispatch(fetchMovie(+movieId));
   }, [movieId, dispatch]);
 
-  if (loading || !movie)
+  if (status === StatusEnum.LOADING || !movie)
     return (
       <div className="flex items-center justify-center h-screen bg-black text-white">
         <Loader />

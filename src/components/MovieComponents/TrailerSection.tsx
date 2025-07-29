@@ -14,6 +14,7 @@ interface Props {
 export const TrailerSection: FC<Props> = ({ videos }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  document.body.style.overflow = isOpen ? "hidden" : "unset";
 
   return (
     <div className="max-w-[80rem] w-full m-auto mb-14 mt-6">
@@ -31,7 +32,7 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
             <img
               src={`https://img.youtube.com/vi/${video.key}/hqdefault.jpg`}
               alt={`Trailer ${idx + 1}`}
-              className="w-full h-full object-cover rounded-lg"
+              className="w-full h-full object-cover "
             />
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
               <div className="relative w-20 h-20 group">
@@ -71,7 +72,7 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
         ))}
       </div>
       {isOpen && videos[selectedIndex] && (
-        <div className="fixed inset-0 z-50 bg-black w-full h-full ">
+        <div className="fixed inset-0 z-50 bg-black w-full h-full">
           <div className="w-full h-full relative flex flex-col items-center m-auto">
             <ReactPlayer
               src={`https://www.youtube.com/watch?v=${videos[selectedIndex].key}`}

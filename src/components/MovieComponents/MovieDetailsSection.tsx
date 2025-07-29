@@ -68,7 +68,7 @@ export const MovieDetailsSection: FC<Props> = ({
                     ? `https://image.tmdb.org/t/p/original${company.logo_path}`
                     : "/prod-company-blank.png"
                 }
-                className="w-full h-[100px] rounded-2xl object-contain border-1 bg-white"
+                className="w-full h-[100px] rounded-lg object-contain border-1 bg-white"
               ></img>
               <p className="text-gray-400 italic">{company.name}</p>
             </div>

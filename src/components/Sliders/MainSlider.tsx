@@ -1,16 +1,13 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import _throttle from "lodash/throttle";
-import { fetchMovies } from "../../store/movieInCinema";
-import { RootState, AppDispatch } from "../../store/store";
+import { RootState } from "../../store/store";
 import MovieCard from "../../components/MovieCard";
 import SliderCounter from "../../components/SliderCounter";
 import { StatusEnum } from "../../utils/EnumsFile";
 import Loader from "../Loader";
-import { fetchAllMovies } from "../../store/allMovies";
 
 const MainSlider: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const [activeIndex, setActiveIndex] = useState(() => {
     const saved = localStorage.getItem("activeSlideIndex");
     return saved ? Number(saved) : 0;
@@ -18,11 +15,6 @@ const MainSlider: React.FC = () => {
   const { movieInCinema, status } = useSelector(
     (state: RootState) => state.movieInCinema
   );
-
-  useEffect(() => {
-    dispatch(fetchMovies());
-    dispatch(fetchAllMovies());
-  }, [dispatch]);
 
   useEffect(() => {
     const handleSaveActiveIndex = () => {

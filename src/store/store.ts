@@ -10,6 +10,7 @@ import sessionsSlice from "./sessionsSlice";
 import bookingSlice from "./bookingSlice";
 import profileSlice from "./profileSlice";
 import favoritesSlice from "./favoritesSlice";
+import { movieApi } from "../services/movieApi";
 
 const store = configureStore({
   reducer: {
@@ -23,9 +24,12 @@ const store = configureStore({
     sessions: sessionsSlice,
     booking: bookingSlice,
     favorites: favoritesSlice,
+    [movieApi.reducerPath]: movieApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(checkTokenExpiryMiddleware),
+    getDefaultMiddleware()
+      .concat(checkTokenExpiryMiddleware)
+      .concat(movieApi.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

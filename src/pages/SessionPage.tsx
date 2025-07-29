@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchSessions, clearSessionsForDate } from "../store/sessionsSlice";
@@ -6,9 +6,9 @@ import DateTabs from "../components/SessionsDisplay/DateTabs";
 import SessionDetails from "../components/SessionsDisplay/SessionDetails";
 import { StatusEnum } from "../utils/EnumsFile";
 import { NavLink, useParams, useSearchParams } from "react-router-dom";
-import { Movie } from "../types/authTypes";
 import Loader from "../components/Loader";
 import { FaHome } from "react-icons/fa";
+import { fetchMovie } from "../store/movieSlice";
 
 const formatDateToYYYYMMDD = (date: Date): string => {
   const year = date.getFullYear();
@@ -24,15 +24,9 @@ const SessionPage: React.FC = () => {
   const { sessions, status } = useSelector(
     (state: RootState) => state.sessions
   );
-  const { allMovie } = useSelector((state: RootState) => state.allMovies);
+  const { movie } = useSelector((state: RootState) => state.movie);
 
-  const currentMovie = useMemo(() => {
-    return allMovie.find(
-      (movie: Movie) => String(movie.movieId) === String(movieId)
-    );
-  }, [allMovie, movieId]);
-
-  const allMovieSessions = currentMovie?.sessions || [];
+  const allMovieSessions = movie?.sessions || [];
 
   const getInitialDate = useCallback((): string => {
     const dateFromUrl = searchParams.get("date");
@@ -51,6 +45,12 @@ const SessionPage: React.FC = () => {
     },
     [setSearchParams]
   );
+
+  useEffect(() => {
+    if (movieId) {
+      dispatch(fetchMovie(+movieId));
+    }
+  }, [dispatch, status, movieId]);
 
   useEffect(() => {
     if (selectedDate && movieId) {
@@ -98,36 +98,31 @@ const SessionPage: React.FC = () => {
         <div className="flex max-h-42">
           <img
             src={
-              currentMovie?.tmdbDetails.poster_path
-                ? `${posterBaseUrl}${currentMovie?.tmdbDetails.poster_path}`
+              movie?.poster_path
+                ? `${posterBaseUrl}${movie?.poster_path}`
                 : "https://via.placeholder.com/40x60.png?text=N/A"
             }
-            alt={currentMovie?.tmdbDetails.title}
+            alt={movie?.title}
             className="w-28 h-42 object-cover rounded-sm mr-4 flex-shrink-0 bg-gray-700"
           />
           <div className="flex flex-col overflow-hidden text-wrap max-w-[680px] justify-end text-ellipsis">
             <h3 className="text-white text-5xl font-medium truncate leading-tight">
-              {currentMovie?.tmdbDetails.title}
+              {movie?.title}
             </h3>
             <p className="text-white text-md ">
-              {currentMovie?.tmdbDetails.overview.split(/[.!?]/)[0]}
+              {movie?.overview.split(/[.!?]/)[0]}
             </p>
           </div>
         </div>
         <div className="w-[320px]">
           <div className="flex flex-wrap gap-4 text-md opacity-80 justify-end">
-            <span>
-              {currentMovie?.tmdbDetails.vote_average.toFixed(1)} IMDB
-            </span>
-            •
-            <span>
-              {currentMovie?.tmdbDetails?.release_date?.split("-")[0]}
-            </span>
-            •<span>{currentMovie?.tmdbDetails.genres[0].name}</span>•
+            <span>{movie?.vote_average.toFixed(1)} IMDB</span>•
+            <span>{movie?.release_date?.split("-")[0]}</span>•
+            <span>{movie?.genres[0].name}</span>•
           </div>
           <div className="flex flex-wrap gap-4 text-md opacity-80 justify-end">
-            <span>{currentMovie?.tmdbDetails.runtime} min.</span>•
-            <span>2D</span>•<span>Cinetech+</span>
+            <span>{movie?.runtime} min.</span>•<span>2D</span>•
+            <span>Cinetech+</span>
           </div>
         </div>
       </div>

@@ -1,17 +1,22 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "../../api/apiClient";
 import { Movie, ProductionCompany } from "../../types/movieTypes";
+import { StatusEnum } from "../../utils/EnumsFile";
 
 interface MovieState {
   movie: Movie | null;
-  loading: boolean;
   error: string | null;
+  status:
+    | StatusEnum.IDLE
+    | StatusEnum.LOADING
+    | StatusEnum.SUCCEEDED
+    | StatusEnum.FAILED;
 }
 
 const initialState: MovieState = {
   movie: null,
-  loading: false,
   error: null,
+  status: StatusEnum.IDLE,
 };
 
 export const fetchMovie = createAsyncThunk<Movie, number>(
@@ -62,22 +67,22 @@ const movieSlice = createSlice({
     clearMovie(state) {
       state.movie = null;
       state.error = null;
-      state.loading = false;
+      state.status = StatusEnum.IDLE;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchMovie.pending, (state) => {
-        state.loading = true;
+        state.status = StatusEnum.LOADING;
         state.error = null;
       })
       .addCase(fetchMovie.fulfilled, (state, action: PayloadAction<Movie>) => {
         state.movie = action.payload;
-        state.loading = false;
+        state.status = StatusEnum.SUCCEEDED;
         state.error = null;
       })
       .addCase(fetchMovie.rejected, (state, action) => {
-        state.loading = false;
+        state.status = StatusEnum.FAILED;
         state.error = action.payload as string;
       });
   },

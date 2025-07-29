@@ -17,7 +17,7 @@ interface MoviesState {
 
 const initialState: MoviesState = {
   movieInCinema: [],
-  status: StatusEnum.LOADING,
+  status: StatusEnum.IDLE,
   error: null,
 };
 
