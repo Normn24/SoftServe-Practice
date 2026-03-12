@@ -31,7 +31,7 @@ export interface Session {
   dateTime: string;
   price: number;
   seats: Seat[];
-  _id: string;
+  _id?: string;
 }
 export interface SessionData {
   session: {
@@ -45,7 +45,7 @@ export interface SessionData {
 export interface Seat {
   seatNumber: number;
   isBooked: boolean;
-  _id: string;
+  _id?: string;
 }
 export interface Movie {
   _id: string;

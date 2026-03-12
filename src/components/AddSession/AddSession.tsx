@@ -19,8 +19,11 @@ export default function AddSession({ movieId }: { movieId: number }) {
       ticketPrice: Yup.number().min(1, 'Price must be greater than 0').required('Ticket price is required'),
       countOfSeats: Yup.number().min(1, 'Seats must be greater than 0').required('Count of seats is required'),
     }),
-    onSubmit: (values, { resetForm }) => {
-      const seatsArray = Array.from({ length: values.countOfSeats }, (_, i) => i + 1);
+    onSubmit: (values) => {
+      const seatsArray = Array.from({ length: values.countOfSeats }, (_, i) => ({
+        seatNumber: i + 1,
+        isBooked: false,
+      }));
       const session = {
         dateTime: `${values.date}T${values.time}`,
         price: values.ticketPrice,

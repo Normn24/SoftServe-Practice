@@ -1,5 +1,4 @@
-import axios from 'axios';
-import {  useEffect, useState} from 'react'
+import { useEffect } from 'react'
 import Card from '../Card/Card';
 import Spinner from '../Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,7 +14,7 @@ export default function Movies() {
   useEffect(() => {
     dispatch(fetchAllMovies())
 
-  }, [])
+  }, [dispatch])
 
 
   return (
