@@ -3,7 +3,7 @@ import axios from "../../api/apiClient";
 import { Movie, ProductionCompany } from "../../types/movieTypes";
 import { StatusEnum } from "../../utils/EnumsFile";
 
-interface MovieState {
+export interface MovieState {
   movie: Movie | null;
   error: string | null;
   status:

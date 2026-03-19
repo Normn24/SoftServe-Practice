@@ -1,88 +1,62 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useCallback, useRef } from "react";
 import _throttle from "lodash/throttle";
-import { RootState } from "../../store/store";
+import { useGetMoviesInCinemaQuery } from "../../services/moviesApi";
 import MovieCard from "../../components/MovieCard";
 import SliderCounter from "../../components/SliderCounter";
-import { StatusEnum } from "../../utils/EnumsFile";
 import Loader from "../Loader";
+import { usePersistedState } from "../../hooks/usePersistedState";
+
+const SLIDE_KEY = "activeSlideIndex";
+const THROTTLE_MS = 600;
 
 const MainSlider: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState(() => {
-    const saved = localStorage.getItem("activeSlideIndex");
-    return saved ? Number(saved) : 0;
-  });
-  const { movieInCinema, status } = useSelector(
-    (state: RootState) => state.movieInCinema
-  );
-
-  useEffect(() => {
-    const handleSaveActiveIndex = () => {
-      localStorage.setItem("activeSlideIndex", String(activeIndex));
-    };
-    window.addEventListener("beforeunload", handleSaveActiveIndex);
-    return () => {
-      handleSaveActiveIndex();
-      window.removeEventListener("beforeunload", handleSaveActiveIndex);
-    };
-  }, [activeIndex]);
+  const { data: movieInCinema = [], isLoading } = useGetMoviesInCinemaQuery();
+  const [activeIndex, setActiveIndex] = usePersistedState<number>(SLIDE_KEY, 0);
 
   const changeSlide = useCallback(
     (direction: "up" | "down") => {
-      if (!movieInCinema || movieInCinema.length === 0) return;
-
-      setActiveIndex((prevIndex) => {
-        let newIndex;
-        if (direction === "up") {
-          newIndex = Math.max(0, prevIndex - 1);
-        } else {
-          newIndex = Math.min(movieInCinema.length - 1, prevIndex + 1);
-        }
-        return newIndex;
+      if (movieInCinema.length === 0) return;
+      setActiveIndex((prev) => {
+        if (direction === "up") return Math.max(0, prev - 1);
+        return Math.min(movieInCinema.length - 1, prev + 1);
       });
     },
-    [movieInCinema]
+    [movieInCinema.length, setActiveIndex]
   );
 
-  const handleWheel = useCallback(
-    (event: WheelEvent) => {
-      if (event.deltaY < 0) {
-        changeSlide("up");
-      } else if (event.deltaY > 0) {
-        changeSlide("down");
-      }
-    },
-    [changeSlide]
-  );
-
-  const throttledWheelHandler = useMemo(
-    () => _throttle(handleWheel, 600, { leading: true, trailing: false }),
-    [handleWheel]
+  const throttledChangeSlideRef = useRef(
+    _throttle(changeSlide, THROTTLE_MS, { leading: true, trailing: false })
   );
 
   useEffect(() => {
-    const sliderElement = document.getElementById("main-slider-container");
-    if (sliderElement) {
-      sliderElement.addEventListener("wheel", throttledWheelHandler);
-    }
-    return () => {
-      if (sliderElement) {
-        sliderElement.removeEventListener("wheel", throttledWheelHandler);
-      }
-      throttledWheelHandler.cancel();
-    };
-  }, [throttledWheelHandler]);
+    throttledChangeSlideRef.current = _throttle(
+      changeSlide,
+      THROTTLE_MS,
+      { leading: true, trailing: false }
+    );
+  }, [changeSlide]);
 
-  if (
-    !movieInCinema ||
-    movieInCinema.length === 0 ||
-    status === StatusEnum.LOADING
-  )
+  useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      throttledChangeSlideRef.current(event.deltaY < 0 ? "up" : "down");
+    };
+
+    const sliderElement = document.getElementById("main-slider-container");
+    sliderElement?.addEventListener("wheel", handleWheel);
+
+    return () => {
+      sliderElement?.removeEventListener("wheel", handleWheel);
+      throttledChangeSlideRef.current.cancel();
+    };
+  }, []);
+
+  if (isLoading || movieInCinema.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen bg-black text-white">
         <Loader />
       </div>
     );
+  }
 
   return (
     <div
@@ -95,15 +69,11 @@ const MainSlider: React.FC = () => {
           return (
             <div
               key={movie._id || movie.movieId || `movie-${index}`}
-              className={`
-                absolute inset-0 w-full h-full
-                transition-opacity duration-700 ease-in-out
-                ${
-                  isActive
-                    ? "opacity-100 z-10"
-                    : "opacity-0 z-0 pointer-events-none"
-                }
-              `}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${
+                isActive
+                  ? "opacity-100 z-10"
+                  : "opacity-0 z-0 pointer-events-none"
+              }`}
               role="tabpanel"
               aria-hidden={!isActive}
               id={`slide-${index}`}
@@ -112,15 +82,15 @@ const MainSlider: React.FC = () => {
               <div className="w-full h-full flex items-center justify-center">
                 <MovieCard
                   movieId={String(movie.movieId)}
-                  title={movie.tmdbDetails?.title || "N/A"}
-                  description={movie.tmdbDetails?.overview || ""}
+                  title={movie.tmdbDetails?.title ?? "N/A"}
+                  description={movie.tmdbDetails?.overview ?? ""}
                   posterPath={movie.tmdbDetails?.backdrop_path}
                   imdb={movie.tmdbDetails?.vote_average}
-                  year={movie.tmdbDetails?.release_date?.split("-")[0] || ""}
-                  genre={movie.tmdbDetails?.genres?.[0]?.name || ""}
+                  year={movie.tmdbDetails?.release_date?.split("-")[0] ?? ""}
+                  genre={movie.tmdbDetails?.genres?.[0]?.name ?? ""}
                   duration={movie.tmdbDetails?.runtime}
-                  sessions={movie.sessions || []}
-                  videos={movie.tmdbDetails?.videos[1] || null}
+                  sessions={movie.sessions ?? []}
+                  videos={movie.tmdbDetails?.videos[1] ?? null}
                   isActive={isActive}
                 />
               </div>

@@ -1,32 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchNewMovies } from "../../store/newMovie";
-import { RootState, AppDispatch } from "../../store/store";
+import React from "react";
+import { useGetUpcomingMoviesQuery } from "../../services/moviesApi";
 import NewMovieCard from "../NewMovieCard";
-import { StatusEnum } from "../../utils/EnumsFile";
 import Loader from "../Loader";
 
 const NewMovies: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { moviesUpComming, status } = useSelector(
-    (state: RootState) => state.moviesUpComming
-  );
+  const { data: moviesUpcoming = [], isLoading } = useGetUpcomingMoviesQuery();
 
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      await dispatch(fetchNewMovies());
-      setLoading(false);
-    })();
-  }, [dispatch]);
-
-  if (
-    !moviesUpComming ||
-    moviesUpComming.length === 0 ||
-    status === StatusEnum.LOADING
-  ) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black text-white">
         <Loader />
@@ -45,21 +25,19 @@ const NewMovies: React.FC = () => {
       }}
     >
       <div className="grid grid-cols-4 gap-6 p-6 w-full max-w-[1400px]">
-        {moviesUpComming.map((movie) => (
+        {moviesUpcoming.map((movie) => (
           <NewMovieCard
             key={movie.movieId}
             movieId={movie.movieId}
-            title={movie.tmdbDetails?.title || "N/A"}
-            description={movie.tmdbDetails?.overview || ""}
+            title={movie.tmdbDetails?.title ?? "N/A"}
+            description={movie.tmdbDetails?.overview ?? ""}
             posterPath={movie.tmdbDetails?.poster_path}
           />
         ))}
       </div>
 
-      {loading && (
-        <div className="w-full flex justify-center py-8">
-          <Loader />
-        </div>
+      {moviesUpcoming.length === 0 && !isLoading && (
+        <p className="text-gray-400 mt-12">No upcoming movies at the moment.</p>
       )}
     </div>
   );

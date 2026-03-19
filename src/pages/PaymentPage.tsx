@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import Loader from "../components/Loader";
 import { FaArrowLeft } from "react-icons/fa";
 import valid from "card-validator";
+import { toast } from "../utils/toast";
 
 interface PaymentLocationState {
   selectedSeatDetails: { _id: string; seatNumber: number }[];
@@ -28,10 +29,7 @@ const PaymentSchema = Yup.object().shape({
     )
     .required("The card number is required"),
   expiryDate: Yup.string()
-    .matches(
-      /^(0[1-9]|1[0-2])\/?([0-9]{2})$/,
-      "MM/YY format, for example 05/28"
-    )
+    .matches(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, "MM/YY format, e.g. 05/28")
     .required("Expiration date is required"),
   cvv: Yup.string()
     .matches(/^[0-9]{3,4}$/, "CVV must consist of 3 or 4 digits")
@@ -64,52 +62,41 @@ const PaymentPage: React.FC = () => {
   }, [dispatch]);
 
   const handleSubmitPayment = async () => {
-    if (
-      !movieId ||
-      !sessionId ||
-      !selectedSeatDetails ||
-      selectedSeatDetails.length === 0
-    ) {
-      console.error("Missing data for booking");
+    if (!movieId || !sessionId || !selectedSeatDetails?.length) {
+      toast.error("Missing booking data. Please try again.");
       return;
     }
+
     setIsBookingAttempted(true);
     dispatch(resetBookingState());
 
     try {
       const bookingPromises = selectedSeatDetails.map((seat) =>
         dispatch(
-          bookSingleSeat({
-            movieId,
-            sessionId,
-            seatNumber: seat.seatNumber,
-          })
+          bookSingleSeat({ movieId, sessionId, seatNumber: seat.seatNumber })
         ).unwrap()
       );
+
       const results = await Promise.allSettled(bookingPromises);
-      const successfulBookings = results.filter(
-        (r) => r.status === "fulfilled"
-      );
-      if (successfulBookings.length === selectedSeatDetails.length) {
-        alert("Квитки успішно придбані!");
+      const allSucceeded = results.every((r) => r.status === "fulfilled");
+
+      if (allSucceeded) {
+        toast.success("Tickets successfully purchased!");
         navigate("/");
+      } else {
+        toast.error("Some seats could not be booked. Please try again.");
       }
-    } catch (e) {
-      console.error("General error during booking process:", e);
+    } catch {
+      toast.error("Booking failed. Please try again.");
     }
   };
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
-  if (!selectedSeatDetails || selectedSeatDetails.length === 0) {
+  if (!selectedSeatDetails?.length) {
     return (
       <div className="mt-28 p-4 text-white max-w-lg m-auto text-center">
         <h1 className="text-2xl font-semibold mb-4">Error</h1>
         <p className="text-gray-400 mb-4">
-          No seats have been selected for booking or session data is
-          missing.Checkout
+          No seats selected for booking or session data is missing.
         </p>
         <button
           onClick={() => navigate(`/${movieId}/sessions/${sessionId}`)}
@@ -125,8 +112,8 @@ const PaymentPage: React.FC = () => {
     <div className="mt-28 p-4 text-white max-w-[1200px] m-auto min-h-[calc(100vh-130px)] flex flex-col">
       <div className="flex items-center mb-6">
         <button
-          onClick={handleGoBack}
-          className="mr-4 text-white transition duration-200 w-12 h-12  rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700"
+          onClick={() => navigate(-1)}
+          className="mr-4 text-white transition duration-200 w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700"
         >
           <FaArrowLeft />
         </button>
@@ -134,41 +121,36 @@ const PaymentPage: React.FC = () => {
           Payment for tickets
         </h1>
       </div>
+
       <div className="flex gap-10 flex-col max-w-[600px] m-auto mt-0 mb-0">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-4">
-            <img
-              src={`https://image.tmdb.org/t/p/original${moviePoster}`}
-              alt={movieTitle}
-              className="w-28 h-42 object-cover rounded-sm flex-shrink-0 bg-gray-700"
-            />
-            <div className="flex flex-col text-gray-400 text-md w-[calc(100%-128px)]">
-              <h3 className="text-white text-3xl font-medium truncate leading-tight">
-                {movieTitle}
-              </h3>
-              <hr className="mt-4 mb-4" />
-              <p className="text-lg">
-                {sessionDate} • {sessionTime}
-              </p>
-              <hr className="mt-4 mb-4" />
-              <p className="text-lg">
-                Number of tickets:{" "}
-                <span className="font-bold text-white">
-                  {selectedSeatDetails.length}
-                </span>{" "}
-                • Amount:{" "}
-                <span className="font-bold text-white">{totalPrice}₴</span>
-              </p>
-            </div>
+        <div className="flex items-center gap-4">
+          <img
+            src={`https://image.tmdb.org/t/p/original${moviePoster}`}
+            alt={movieTitle}
+            className="w-28 h-42 object-cover rounded-sm flex-shrink-0 bg-gray-700"
+          />
+          <div className="flex flex-col text-gray-400 text-md w-[calc(100%-128px)]">
+            <h3 className="text-white text-3xl font-medium truncate leading-tight">
+              {movieTitle}
+            </h3>
+            <hr className="mt-4 mb-4" />
+            <p className="text-lg">
+              {sessionDate} • {sessionTime}
+            </p>
+            <hr className="mt-4 mb-4" />
+            <p className="text-lg">
+              Tickets:{" "}
+              <span className="font-bold text-white">
+                {selectedSeatDetails.length}
+              </span>{" "}
+              • Total:{" "}
+              <span className="font-bold text-white">{totalPrice}₴</span>
+            </p>
           </div>
         </div>
 
         <Formik
-          initialValues={{
-            cardNumber: "",
-            expiryDate: "",
-            cvv: "",
-          }}
+          initialValues={{ cardNumber: "", expiryDate: "", cvv: "" }}
           validationSchema={PaymentSchema}
           onSubmit={handleSubmitPayment}
         >
@@ -207,7 +189,7 @@ const PaymentPage: React.FC = () => {
                     type="text"
                     name="expiryDate"
                     id="expiryDate"
-                    placeholder="ММ/РР"
+                    placeholder="MM/YY"
                     className="w-full bg-gray-700 border border-gray-600 text-white rounded-md p-3 focus:ring-yellow-500 focus:border-yellow-500"
                   />
                   <ErrorMessage
@@ -239,18 +221,18 @@ const PaymentPage: React.FC = () => {
               </div>
 
               <p className="text-xs text-gray-500 mt-4">
-                By clicking the “Pay” button, you confirm that you have read the
-                list of information about the service and accept the terms of
-                the public agreement.
+                By clicking "Pay", you confirm that you have read and accept the
+                terms of the public agreement.
               </p>
 
               {bookingStatus === StatusEnum.LOADING && <Loader />}
 
-              {isBookingAttempted && bookingStatus === StatusEnum.SUCCEEDED && (
-                <p className="text-green-400 text-sm text-center mt-2">
-                  All tickets have been successfully booked!
-                </p>
-              )}
+              {isBookingAttempted &&
+                bookingStatus === StatusEnum.SUCCEEDED && (
+                  <p className="text-green-400 text-sm text-center mt-2">
+                    All tickets have been successfully booked!
+                  </p>
+                )}
 
               <button
                 type="submit"

@@ -4,13 +4,13 @@ import { StatusEnum } from "../../utils/EnumsFile";
 import { ErrorResponse } from "react-router-dom";
 import { AxiosError } from "axios";
 
-interface BookSeatArgs {
+export interface BookSeatArgs {
   movieId: string;
   sessionId: string;
   seatNumber: number;
 }
 
-interface BookingState {
+export interface BookingState {
   bookingStatus: StatusEnum;
   bookingError: string | null;
 }
