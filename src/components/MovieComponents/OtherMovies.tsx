@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
-import ReactPlayer from "react-player";
 import { NavLink } from "react-router-dom";
 import { useGetMoviesInCinemaQuery } from "../../services/moviesApi";
+import { LazyReactPlayer } from "../LazyReactPlayer";
 import { Movie } from "../../types/authTypes";
 
 interface OtherMoviesProps {
@@ -9,6 +9,7 @@ interface OtherMoviesProps {
 }
 
 const OtherMovies: React.FC<OtherMoviesProps> = ({ movieId }) => {
+  // Дані з кешу — мережевого запиту не буде
   const { data: movieInCinema = [] } = useGetMoviesInCinemaQuery();
   const [showTrailer, setShowTrailer] = useState(false);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
@@ -66,9 +67,10 @@ const OtherMovies: React.FC<OtherMoviesProps> = ({ movieId }) => {
                     />
                   </div>
 
+                  {/* LazyReactPlayer монтується тільки після 500ms ховера */}
                   {isHovered && showTrailer && trailer && (
                     <div className="absolute inset-0 z-1">
-                      <ReactPlayer
+                      <LazyReactPlayer
                         src={`https://www.youtube.com/watch?v=${trailer.key}`}
                         playing
                         muted

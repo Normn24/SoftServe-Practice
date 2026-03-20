@@ -1,11 +1,9 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Session } from "../../types/authTypes";
 import { IoTicket } from "react-icons/io5";
-import ReactPlayer from "react-player";
 import { NavLink } from "react-router-dom";
 import { RoutePaths } from "../../utils/EnumsFile";
-import { useClosestSessions } from "../../hooks/UseClosestSessions";
-import { useTrailerAutoplay } from "../../hooks/UseTrailerAutoplay";
+import { LazyReactPlayer } from "../LazyReactPlayer";
 
 interface MovieCardProps {
   movieId: string;
@@ -21,6 +19,13 @@ interface MovieCardProps {
   videos: { key: string; type: string; site: string } | null;
 }
 
+const formatDateToYYYYMMDD = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 const MovieCard: React.FC<MovieCardProps> = ({
   movieId,
   title,
@@ -34,8 +39,89 @@ const MovieCard: React.FC<MovieCardProps> = ({
   isActive,
   videos,
 }) => {
-  const closestSessionInfo = useClosestSessions(sessions);
-  const showTrailer = useTrailerAutoplay(isActive, 5000);
+  const [showTrailer, setShowTrailer] = useState(false);
+
+  const closestSessionInfo = useMemo(() => {
+    if (!sessions || sessions.length === 0) {
+      return { label: "", times: [], dateString: null };
+    }
+
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+
+    const todayStr = today.toDateString();
+    const tomorrowStr = tomorrow.toDateString();
+
+    const todaySessions = sessions.filter(
+      (s) => new Date(s.dateTime).toDateString() === todayStr
+    );
+    if (todaySessions.length > 0) {
+      return {
+        label: "Sessions today:",
+        times: todaySessions.map((s) =>
+          new Date(s.dateTime).toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        ),
+        dateString: formatDateToYYYYMMDD(today),
+      };
+    }
+
+    const tomorrowSessions = sessions.filter(
+      (s) => new Date(s.dateTime).toDateString() === tomorrowStr
+    );
+    if (tomorrowSessions.length > 0) {
+      return {
+        label: "Sessions tomorrow:",
+        times: tomorrowSessions.map((s) =>
+          new Date(s.dateTime).toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        ),
+        dateString: formatDateToYYYYMMDD(tomorrow),
+      };
+    }
+
+    const futureSessions = sessions
+      .filter((s) => new Date(s.dateTime) > today)
+      .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
+
+    if (futureSessions.length > 0) {
+      const closestDate = new Date(futureSessions[0].dateTime);
+      const formattedDisplayDate = closestDate.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "long",
+      });
+      const sessionsOnDate = futureSessions.filter(
+        (s) => new Date(s.dateTime).toDateString() === closestDate.toDateString()
+      );
+      return {
+        label: `Sessions ${formattedDisplayDate}:`,
+        times: sessionsOnDate.map((s) =>
+          new Date(s.dateTime).toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        ),
+        dateString: formatDateToYYYYMMDD(closestDate),
+      };
+    }
+
+    return { label: "", times: [], dateString: null };
+  }, [sessions]);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (isActive) {
+      timer = setTimeout(() => setShowTrailer(true), 5000);
+    } else {
+      setShowTrailer(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isActive]);
 
   const sessionsPath = RoutePaths.MOVIESESSIONS.replace(":movieId", movieId);
   const linkToSessions = closestSessionInfo.dateString
@@ -88,7 +174,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
 
         {showTrailer && videos?.key ? (
           <div className="absolute inset-0 z-0 pt-[56.25%] top-[50%] translate-y-[-50%]">
-            <ReactPlayer
+            <LazyReactPlayer
               src={`https://www.youtube.com/watch?v=${videos.key}`}
               playing
               controls

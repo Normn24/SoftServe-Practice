@@ -1,18 +1,17 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import { NavLink, useParams } from "react-router-dom";
+import { skipToken } from "@reduxjs/toolkit/query/react";
+import { useGetSingleMovieQuery } from "../services/moviesApi";
+import { useAddFavoriteMutation } from "../services/favoritesApi";
 import { ActorsSection } from "../components/MovieComponents/ActorsSection";
 import { BackdropSection } from "../components/MovieComponents/BackdropSection";
 import { MovieDetailsSection } from "../components/MovieComponents/MovieDetailsSection";
 import { TrailerSection } from "../components/MovieComponents/TrailerSection";
-import { fetchMovie } from "../store/movieSlice";
-import { AppDispatch, RootState } from "../store/store";
+import OtherMovies from "../components/MovieComponents/OtherMovies";
 import Loader from "../components/Loader";
 import { IoTicket } from "react-icons/io5";
-import { RoutePaths, StatusEnum } from "../utils/EnumsFile";
 import { FaHeart, FaHome } from "react-icons/fa";
-import { useAddFavoriteMutation } from "../services/favoritesApi";
-import OtherMovies from "../components/MovieComponents/OtherMovies";
+import { RoutePaths } from "../utils/EnumsFile";
 
 const formatDateToYYYYMMDD = (date: Date): string => {
   const year = date.getFullYear();
@@ -22,18 +21,17 @@ const formatDateToYYYYMMDD = (date: Date): string => {
 };
 
 const MoviePage: React.FC = () => {
-  const { movieId } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
-  const { movie, status } = useSelector((state: RootState) => state.movie);
+  const { movieId } = useParams<{ movieId: string }>();
+
+  const {
+    data: movie,
+    isLoading,
+  } = useGetSingleMovieQuery(movieId ? +movieId : skipToken);
 
   const [addFavorite, { isLoading: isFavoriteLoading }] =
     useAddFavoriteMutation();
 
-  useEffect(() => {
-    if (movieId) dispatch(fetchMovie(+movieId));
-  }, [movieId, dispatch]);
-
-  if (status === StatusEnum.LOADING || !movie) {
+  if (isLoading || !movie) {
     return (
       <div className="flex items-center justify-center h-screen bg-black text-white">
         <Loader />
@@ -42,14 +40,10 @@ const MoviePage: React.FC = () => {
   }
 
   const today = new Date();
-  const futureSessions = movie.sessions
-    .filter((session) => new Date(session.dateTime) >= today)
-    .sort(
-      (a, b) =>
-        new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
-    );
+  const closestSession = movie.sessions
+    .filter((s) => new Date(s.dateTime) >= today)
+    .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())[0];
 
-  const closestSession = futureSessions[0];
   const sessionsPath = RoutePaths.MOVIESESSIONS.replace(
     ":movieId",
     movieId ?? ""

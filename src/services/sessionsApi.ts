@@ -24,10 +24,16 @@ export interface UpdateSessionArgs {
   session: SessionPayload;
 }
 
+export interface BookSeatArgs {
+  movieId: string;
+  sessionId: string;
+  seatNumber: number;
+}
+
 export const sessionsApi = createApi({
   reducerPath: "sessionsApi",
   baseQuery: baseQueryWithAuth,
-  tagTypes: ["Sessions"],
+  tagTypes: ["Sessions", "SingleSession"],
   endpoints: (builder) => ({
 
     getSessionsByDate: builder.query<
@@ -45,6 +51,9 @@ export const sessionsApi = createApi({
     >({
       query: ({ movieId, sessionId }) =>
         `/movies-in-cinema/${movieId}/sessions/${sessionId}`,
+      providesTags: (_result, _error, { sessionId }) => [
+        { type: "SingleSession", id: sessionId },
+      ],
     }),
 
     addSession: builder.mutation<void, AddSessionArgs>({
@@ -73,6 +82,17 @@ export const sessionsApi = createApi({
       invalidatesTags: ["Sessions"],
     }),
 
+    bookSeat: builder.mutation<void, BookSeatArgs>({
+      query: ({ movieId, sessionId, seatNumber }) => ({
+        url: `/movies-in-cinema/${movieId}/sessions/${sessionId}/book`,
+        method: "POST",
+        body: { seatNumber },
+      }),
+      invalidatesTags: (_result, _error, { sessionId }) => [
+        { type: "SingleSession", id: sessionId },
+      ],
+    }),
+
   }),
 });
 
@@ -82,4 +102,5 @@ export const {
   useAddSessionMutation,
   useRemoveSessionMutation,
   useUpdateSessionMutation,
+  useBookSeatMutation,
 } = sessionsApi;

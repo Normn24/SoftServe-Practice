@@ -1,17 +1,16 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { skipToken } from "@reduxjs/toolkit/query/react";
-import { RootState, AppDispatch } from "../store/store";
+import { RootState } from "../store/store";
 import { useGetSingleSessionQuery } from "../services/sessionsApi";
-import { StatusEnum } from "../utils/EnumsFile";
+import { useGetSingleMovieQuery } from "../services/moviesApi";
 import Loader from "../components/Loader";
 import { Seat } from "../types/authTypes";
 import SeatGrid from "../components/SeatSelection/SeatGrid";
 import { FaArrowLeft, FaInfoCircle } from "react-icons/fa";
 import ModalWindow from "../components/ModalWindow";
 import AuthForm from "../components/Forms/AuthForm";
-import { fetchMovie } from "../store/movieSlice";
 
 const formatSessionTime = (dateTimeString: string | number): string =>
   new Date(dateTimeString).toLocaleTimeString("en-GB", {
@@ -30,23 +29,17 @@ const SeatSelectionPage: React.FC = () => {
     movieId: string;
     sessionId: string;
   }>();
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
   const token = useSelector((state: RootState) => state.auth.token);
-  const { movie, status: movieStatus } = useSelector(
-    (state: RootState) => state.movie
-  );
 
   const [selectedSeatIds, setSelectedSeatIds] = useState<string[]>([]);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>("login");
 
-  useEffect(() => {
-    if (movieStatus === StatusEnum.IDLE && movieId) {
-      dispatch(fetchMovie(+movieId));
-    }
-  }, [dispatch, movieStatus, movieId]);
+  // Обидва запити йдуть паралельно
+  const { data: movie, isLoading: movieLoading } = useGetSingleMovieQuery(
+    movieId ? +movieId : skipToken
+  );
 
   const {
     data: currentSession,
@@ -86,7 +79,6 @@ const SeatSelectionPage: React.FC = () => {
   }, [currentSession, selectedSeatIds]);
 
   const totalTickets = selectedSeatIds.length;
-
   const totalPrice = useMemo(
     () => (currentSession ? currentSession.price * totalTickets : 0),
     [currentSession, totalTickets]
@@ -116,7 +108,7 @@ const SeatSelectionPage: React.FC = () => {
     });
   };
 
-  if (sessionLoading || movieStatus === StatusEnum.LOADING) return <Loader />;
+  if (movieLoading || sessionLoading) return <Loader />;
 
   if (isError) {
     return (
@@ -170,7 +162,10 @@ const SeatSelectionPage: React.FC = () => {
             <div className="w-[calc(100%-120px)] h-0 border-b-[50px] border-l-[15px] border-r-[15px] border-b-white border-l-transparent border-r-transparent m-auto mb-11 rotate-180 shadow-[0px_-27px_32px_-23px_#ffffff]" />
 
             <div className="mb-8 flex justify-center">
-              <SeatGrid seats={seatsWithSelection} onSeatClick={handleSeatClick} />
+              <SeatGrid
+                seats={seatsWithSelection}
+                onSeatClick={handleSeatClick}
+              />
             </div>
 
             <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400 mt-8">
@@ -204,13 +199,17 @@ const SeatSelectionPage: React.FC = () => {
               ) : (
                 <ul>
                   {selectedSeatIds.map((seatId) => {
-                    const seat = seatsWithSelection.find((s) => s._id === seatId);
+                    const seat = seatsWithSelection.find(
+                      (s) => s._id === seatId
+                    );
                     if (!seat) return null;
                     const seatIndex = currentSession.seats.findIndex(
                       (s) => s._id === seatId
                     );
                     const rowNumber =
-                      seatIndex !== -1 ? Math.floor(seatIndex / 10) + 1 : "N/A";
+                      seatIndex !== -1
+                        ? Math.floor(seatIndex / 10) + 1
+                        : "N/A";
                     return (
                       <li
                         key={seatId}
@@ -245,7 +244,10 @@ const SeatSelectionPage: React.FC = () => {
       </div>
 
       {authModalOpen && (
-        <ModalWindow open={authModalOpen} onClose={() => setAuthModalOpen(false)}>
+        <ModalWindow
+          open={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+        >
           <AuthForm
             mode={authModalMode}
             handleClose={() => setAuthModalOpen(false)}

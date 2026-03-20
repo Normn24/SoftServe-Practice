@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import ReactPlayer from "react-player";
+import { LazyReactPlayer } from "../LazyReactPlayer";
 
 interface Video {
   key: string;
@@ -7,11 +7,11 @@ interface Video {
   site: string;
 }
 
-interface Props {
+interface TrailerSectionProps {
   videos: Video[];
 }
 
-export const TrailerSection: FC<Props> = ({ videos }) => {
+export const TrailerSection: FC<TrailerSectionProps> = ({ videos }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -21,8 +21,6 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
-
-  if (!videos || videos.length === 0) return null;
 
   return (
     <div className="max-w-[80rem] w-full m-auto mb-14 mt-6">
@@ -47,23 +45,19 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
                 <svg
                   height="80px"
                   width="80px"
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 60 60"
+                  xmlns="http://www.w3.org/2000/svg"
                   className="absolute z-30 fill-white transition-all duration-500 group-hover:fill-black group-hover:scale-110"
                 >
-                  <g>
-                    <path d="M45.563 29.174 L22 15 L23 46 Z" />
-                  </g>
+                  <g><path d="M45.563 29.174 L22 15 L23 46 Z" /></g>
                 </svg>
                 <div className="absolute z-26 w-full h-full inset-0 bg-white opacity-0 transition-all rounded-full duration-500 group-hover:opacity-100 group-hover:scale-110" />
                 <svg
                   height="80px"
                   width="80px"
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 60 60"
-                  className="absolute z-25 fill-white transition-all duration-500 group-hover:fill-white group-hover:scale-110"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="absolute z-25 fill-white transition-all duration-500 group-hover:scale-110"
                 >
                   <g>
                     <path d="M30,0C13.458,0,0,13.458,0,30s13.458,30,30,30s30-13.458,30-30S46.542,0,30,0z M30,58C14.561,58,2,45.439,2,30 S14.561,2,30,2s28,12.561,28,28S45.439,58,30,58z" />
@@ -78,11 +72,10 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
       {isOpen && videos[selectedIndex] && (
         <div className="fixed inset-0 z-50 bg-black w-full h-full">
           <div className="w-full h-full relative flex flex-col items-center m-auto">
-            <ReactPlayer
+            <LazyReactPlayer
               src={`https://www.youtube.com/watch?v=${videos[selectedIndex].key}`}
               playing
               controls
-              className="absolute top-0 left-0 object-fill"
               loop
               muted
               width="100%"
@@ -93,9 +86,9 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
                 <button
                   key={video.key}
                   onClick={() => setSelectedIndex(idx)}
-                  className={`px-4 py-2 rounded-lg transition border border-transparent ${
+                  className={`px-4 py-2 rounded-lg transition border-1 border-transparent ${
                     idx === selectedIndex
-                      ? "bg-yellow-500/70 border-yellow-500"
+                      ? "bg-yellow-500/70 border-inherit hover:border-yellow-500"
                       : "backdrop-blur-sm rounded-full bg-white/20 hover:bg-gray-100/30 hover:border-yellow-500"
                   }`}
                 >
@@ -105,8 +98,7 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute top-2.5 left-2 text-white transition duration-200 w-12 h-12 backdrop-blur-sm rounded-full bg-white/15 flex items-center justify-center hover:bg-gray-100/30 hover:border hover:border-yellow-500"
-              aria-label="Close trailer"
+              className="absolute top-2.5 left-2 text-white transition duration-200 w-12 h-12 backdrop-blur-sm rounded-full bg-white/15 flex items-center justify-center hover:bg-gray-100/30 hover:border-1 hover:border-yellow-500"
             >
               <svg
                 width="36"

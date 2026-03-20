@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { AppDispatch, RootState } from "../store/store";
-import { bookSingleSeat, resetBookingState } from "../store/bookingSlice";
-import { StatusEnum } from "../utils/EnumsFile";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import Loader from "../components/Loader";
-import { FaArrowLeft } from "react-icons/fa";
 import valid from "card-validator";
-import { toast } from "../utils/toast";
+import { FaArrowLeft } from "react-icons/fa";
+import { useBookSeatMutation } from "../services/sessionsApi";
+import { useToastContext } from "../components/ToastContext/context";
+import Loader from "../components/Loader";
 
 interface PaymentLocationState {
   selectedSeatDetails: { _id: string; seatNumber: number }[];
@@ -29,7 +26,10 @@ const PaymentSchema = Yup.object().shape({
     )
     .required("The card number is required"),
   expiryDate: Yup.string()
-    .matches(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/, "MM/YY format, e.g. 05/28")
+    .matches(
+      /^(0[1-9]|1[0-2])\/?([0-9]{2})$/,
+      "MM/YY format, for example 05/28"
+    )
     .required("Expiration date is required"),
   cvv: Yup.string()
     .matches(/^[0-9]{3,4}$/, "CVV must consist of 3 or 4 digits")
@@ -43,7 +43,7 @@ const PaymentPage: React.FC = () => {
   }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const { showToast } = useToastContext();
 
   const {
     selectedSeatDetails,
@@ -54,40 +54,32 @@ const PaymentPage: React.FC = () => {
     sessionDate,
   } = (location.state || {}) as PaymentLocationState;
 
-  const { bookingStatus } = useSelector((state: RootState) => state.booking);
-  const [isBookingAttempted, setIsBookingAttempted] = useState(false);
-
-  useEffect(() => {
-    dispatch(resetBookingState());
-  }, [dispatch]);
+  // Одна мутація — викликаємо її для кожного місця
+  const [bookSeat, { isLoading }] = useBookSeatMutation();
 
   const handleSubmitPayment = async () => {
-    if (!movieId || !sessionId || !selectedSeatDetails?.length) {
-      toast.error("Missing booking data. Please try again.");
-      return;
-    }
-
-    setIsBookingAttempted(true);
-    dispatch(resetBookingState());
+    if (!movieId || !sessionId || !selectedSeatDetails?.length) return;
 
     try {
-      const bookingPromises = selectedSeatDetails.map((seat) =>
-        dispatch(
-          bookSingleSeat({ movieId, sessionId, seatNumber: seat.seatNumber })
-        ).unwrap()
+      const results = await Promise.allSettled(
+        selectedSeatDetails.map((seat) =>
+          bookSeat({ movieId, sessionId, seatNumber: seat.seatNumber }).unwrap()
+        )
       );
 
-      const results = await Promise.allSettled(bookingPromises);
-      const allSucceeded = results.every((r) => r.status === "fulfilled");
+      const failed = results.filter((r) => r.status === "rejected").length;
 
-      if (allSucceeded) {
-        toast.success("Tickets successfully purchased!");
+      if (failed === 0) {
+        showToast("Tickets successfully purchased!", "success");
         navigate("/");
       } else {
-        toast.error("Some seats could not be booked. Please try again.");
+        showToast(
+          `${failed} of ${results.length} seats could not be booked. Please try again.`,
+          "error"
+        );
       }
     } catch {
-      toast.error("Booking failed. Please try again.");
+      showToast("Payment failed. Please try again.", "error");
     }
   };
 
@@ -117,12 +109,10 @@ const PaymentPage: React.FC = () => {
         >
           <FaArrowLeft />
         </button>
-        <h1 className="text-2xl font-semibold mb-2 text-center">
-          Payment for tickets
-        </h1>
+        <h1 className="text-2xl font-semibold">Payment for tickets</h1>
       </div>
 
-      <div className="flex gap-10 flex-col max-w-[600px] m-auto mt-0 mb-0">
+      <div className="flex gap-10 flex-col max-w-[600px] m-auto">
         <div className="flex items-center gap-4">
           <img
             src={`https://image.tmdb.org/t/p/original${moviePoster}`}
@@ -220,30 +210,19 @@ const PaymentPage: React.FC = () => {
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 mt-4">
-                By clicking "Pay", you confirm that you have read and accept the
-                terms of the public agreement.
+              <p className="text-xs text-gray-500">
+                By clicking "Pay" you confirm that you have read the terms of
+                the public agreement.
               </p>
 
-              {bookingStatus === StatusEnum.LOADING && <Loader />}
-
-              {isBookingAttempted &&
-                bookingStatus === StatusEnum.SUCCEEDED && (
-                  <p className="text-green-400 text-sm text-center mt-2">
-                    All tickets have been successfully booked!
-                  </p>
-                )}
+              {isLoading && <Loader />}
 
               <button
                 type="submit"
-                disabled={
-                  bookingStatus === StatusEnum.LOADING || !(dirty && isValid)
-                }
-                className="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-4 rounded-lg text-center transition duration-200 disabled:opacity-60 disabled:cursor-not-allowed text-lg"
+                disabled={isLoading || !(dirty && isValid)}
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-60 disabled:cursor-not-allowed text-lg"
               >
-                {bookingStatus === StatusEnum.LOADING
-                  ? "Processing..."
-                  : `Pay ${totalPrice}₴`}
+                {isLoading ? "Processing..." : `Pay ${totalPrice}₴`}
               </button>
             </Form>
           )}

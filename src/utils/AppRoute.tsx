@@ -1,33 +1,27 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { RoutePaths } from "./EnumsFile";
-import PrivateRoutes from "./PrivateRoutes";
 import Loader from "../components/Loader";
+import PrivateRoutes from "./PrivateRoutes";
 
-const MainPage = lazy(() => import("../pages/MainPage"));
-const FilmPage = lazy(() => import("../pages/MoviePage"));
+import MainPage from "../pages/MainPage";
+const MoviePage = lazy(() => import("../pages/MoviePage"));
 const NewMoviesPage = lazy(() => import("../pages/NewMoviesPage"));
-const FavoritesPage = lazy(
-  () => import("../components/Favorites/favorites")
-);
 const SessionPage = lazy(() => import("../pages/SessionPage"));
 const SeatSelectionPage = lazy(() => import("../pages/SeatSelectionPage"));
 const PaymentPage = lazy(() => import("../pages/PaymentPage"));
 const AdminPage = lazy(() => import("../pages/admin/Admin"));
 const Profile = lazy(() => import("../pages/profile/Profile"));
-
-const PageLoader = () => (
-  <div className="flex items-center justify-center h-screen bg-black">
-    <Loader />
-  </div>
+const FavoritesPage = lazy(
+  () => import("../components/Favorites/favorites")
 );
 
 function AppRoute() {
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense fallback={<Loader />}>
       <Routes>
         <Route path={RoutePaths.MAIN} element={<MainPage />} />
-        <Route path={RoutePaths.MOVIE} element={<FilmPage />} />
+        <Route path={RoutePaths.MOVIE} element={<MoviePage />} />
         <Route path={RoutePaths.NewMovies} element={<NewMoviesPage />} />
         <Route path={RoutePaths.MOVIESESSIONS} element={<SessionPage />} />
         <Route
