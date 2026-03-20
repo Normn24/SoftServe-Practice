@@ -6,7 +6,7 @@ import {
   updatePassword,
   updatePasswordLocaly,
 } from "../../store/profileSlice";
-import { useToastContext } from "@/components/ToastContext/context";
+import { useToastContext } from "../../components/ToastContext/context";
 
 export default function Profile() {
   const dispatch = useDispatch<AppDispatch>();
