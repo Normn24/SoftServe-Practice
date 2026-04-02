@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { clearToken } from "../../store/authSlice";
 import { RoutePaths } from "../../utils/EnumsFile";
+import { navigate } from "../../utils/navigationRef";
 
 interface LogoutProps {
   handleClose: () => void;
@@ -9,9 +10,10 @@ interface LogoutProps {
 
 function LogoutForm({ handleClose }: LogoutProps) {
   const dispatch = useDispatch<AppDispatch>();
+  
   const handleLogout = () => {
     dispatch(clearToken());
-    window.location.href = `${RoutePaths.MAIN}`;
+    navigate(RoutePaths.MAIN);
   };
 
   return (

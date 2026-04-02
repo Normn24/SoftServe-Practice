@@ -20,10 +20,10 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
     <div className="max-w-[80rem] w-full m-auto mb-14 mt-6">
       <h2 className="text-3xl mb-6 font-bold">Film promotion</h2>
       <div className="flex gap-6">
-        {videos.map((video, idx) => (
+        {videos?.map((video, idx) => (
           <div
             key={video.key}
-            className="relative max-h-[230px] flex grow shrink-0 basis-0 cursor-pointer"
+            className="relative max-h-[230px] max-w-[410px] flex grow shrink-0 basis-0 cursor-pointer"
             onClick={() => {
               setSelectedIndex(idx);
               setIsOpen(true);
@@ -85,7 +85,7 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
               height="100%"
             />
             <div className="absolute top-[50%] left-3 z-52 translate-y-[-50%] flex flex-col gap-4 justify-center">
-              {videos.map((video, idx) => (
+              {videos?.map((video, idx) => (
                 <button
                   key={video.key}
                   onClick={() => setSelectedIndex(idx)}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaSpinner } from "react-icons/fa";
 import { skipToken } from "@reduxjs/toolkit/query/react";
 import { useSearchMoviesQuery } from "../../services/moviesApi";
 import { NavLink } from "react-router-dom";
@@ -16,7 +16,11 @@ const SearchInput: React.FC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { data: searchResults = [] } = useSearchMoviesQuery(
+  const {
+    data: searchResults = [],
+    isFetching,
+    isError,
+  } = useSearchMoviesQuery(
     debouncedQuery.trim().length >= MIN_QUERY_LENGTH
       ? debouncedQuery.trim()
       : skipToken
@@ -65,46 +69,79 @@ const SearchInput: React.FC = () => {
   const handleClose = useCallback(() => setIsSearchOpen(false), []);
 
   const posterBaseUrl = "https://image.tmdb.org/t/p/w92";
-  const showResults = isSearchOpen && inputValue.trim().length >= MIN_QUERY_LENGTH;
+
+  const isTyping = inputValue !== debouncedQuery;
+  const isLoading = isFetching || isTyping;
+
+  const showDropdown =
+    isSearchOpen && inputValue.trim().length >= MIN_QUERY_LENGTH;
+
+  const showEmpty =
+    !isLoading &&
+    debouncedQuery.trim().length >= MIN_QUERY_LENGTH &&
+    (searchResults.length === 0 || isError);
 
   return (
-    <div ref={searchContainerRef} className="relative flex items-center">
-      {!isSearchOpen && (
-        <button
-          onClick={() => setIsSearchOpen(true)}
-          className="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500"
-          aria-label="Open search"
-        >
-          <FaSearch className="text-white text-sm" />
-        </button>
-      )}
-
-      <div
-        className={`flex items-center ${
-          isSearchOpen ? "opacity-100 visible" : "opacity-0 invisible w-0"
+    <div ref={searchContainerRef} className="relative flex items-center h-12">
+      <button
+        onClick={() => setIsSearchOpen(true)}
+        className={`absolute left-0 z-10 w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-gray-700 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-500 ${
+          isSearchOpen
+            ? "opacity-0 scale-75 pointer-events-none"
+            : "opacity-100 scale-100"
         }`}
+        aria-label="Open search"
       >
-        <div className="relative">
-          <input
-            ref={searchInputRef}
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            placeholder="Movie search..."
-            className={`h-12 pl-12 pr-4 py-2 rounded-full bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-[width] duration-300 ease-in-out ${
-              isSearchOpen ? "w-64 sm:w-80 visible" : "w-0 invisible"
-            }`}
-            disabled={!isSearchOpen}
-          />
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+        <FaSearch className="text-white text-sm" />
+      </button>
+
+      <div className="relative">
+        <input
+          ref={searchInputRef}
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Movie search..."
+          className={`h-12 pl-12 rounded-full bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all duration-300 ease-in-out ${
+            isSearchOpen
+              ? "w-64 sm:w-80 pr-4 opacity-100"
+              : "w-12 pr-0 opacity-0 pointer-events-none"
+          }`}
+          disabled={!isSearchOpen}
+        />
+        
+        <div
+          className={`absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none transition-opacity duration-300 ease-in-out ${
+            isSearchOpen ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {/* Оновлено: використовуємо isLoading */}
+          {isLoading ? (
+            <FaSpinner className="text-yellow-400 text-sm animate-spin" />
+          ) : (
             <FaSearch className="text-gray-400" />
-          </div>
+          )}
         </div>
       </div>
 
-      {showResults && (
+      {showDropdown && (
         <div className="absolute top-full right-0 md:left-0 md:right-auto mt-2 w-full min-w-[200px] max-w-[320px] max-h-84 overflow-y-auto bg-gray-800 rounded-lg shadow-xl z-20 scrollbar-hide">
-          {searchResults.length > 0 ? (
+          
+          {/* Оновлено: показуємо скелетони, якщо isLoading = true */}
+          {isLoading && (
+            <div className="flex flex-col gap-2 p-3">
+              {[1, 2].map((i) => (
+                <div key={i} className="flex items-center gap-3 animate-pulse">
+                  <div className="w-10 h-[60px] rounded-sm bg-gray-700 shrink-0" />
+                  <div className="h-4 bg-gray-700 rounded w-3/4" />
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {/* Оновлено: показуємо результати тільки якщо НЕ завантажуємо */}
+          {!isLoading &&
+            !isError &&
             searchResults.map((movie) => (
               <NavLink
                 key={movie.movieId}
@@ -127,8 +164,9 @@ const SearchInput: React.FC = () => {
                   </h3>
                 </div>
               </NavLink>
-            ))
-          ) : (
+            ))}
+            
+          {showEmpty && (
             <div className="p-4 text-center text-gray-400">
               Nothing was found for "{inputValue}".
             </div>
