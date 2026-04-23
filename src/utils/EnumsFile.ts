@@ -17,5 +17,6 @@ export enum RoutePaths {
   MOVIESESSIONSBOOK = "/:movieId/sessions/:sessionId",
   MOVIESESSIONSPAYMENT = "/checkout/:movieId/:sessionId",
   ADMIN = "/admin",
+  SCANNER = "/admin/scan",
   PROFILE = "/profile",
 }

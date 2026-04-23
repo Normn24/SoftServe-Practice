@@ -13,6 +13,16 @@ export interface UserTicket {
   sessionPrice: number | null;
 }
 
+export interface ValidateTicketResponse {
+  valid: boolean;
+  message: string;
+  ticket: {
+    _id: string;
+    seatNumber: number;
+    movieInCinema: number;
+  };
+}
+
 export const ticketsApi = createApi({
   reducerPath: "ticketsApi",
   baseQuery: baseQueryWithAuth,
@@ -32,10 +42,18 @@ export const ticketsApi = createApi({
       invalidatesTags: ["Tickets"],
     }),
 
+    validateTicket: builder.mutation<ValidateTicketResponse, string>({
+      query: (ticketId) => ({
+        url: `/tickets/${ticketId}/validate`,
+        method: "PUT",
+      }),
+    }),
+
   }),
 });
 
 export const {
   useGetUserTicketsQuery,
   useDeleteTicketMutation,
+  useValidateTicketMutation,
 } = ticketsApi;
