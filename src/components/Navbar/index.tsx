@@ -103,6 +103,12 @@ const Navbar: React.FC = () => {
                         Profile
                       </li>
                       <li
+                        onClick={() => navigate("/admin/scan")}
+                        className="px-4 py-2 hover:bg-gray-700 cursor-pointer w-full"
+                      >
+                        Admin
+                      </li>
+                      <li
                         onClick={() => openModal("logout")}
                         className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
                       >
