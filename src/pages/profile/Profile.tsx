@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Ticket, Heart, Bookmark, BarChart3, Bell } from "lucide-react";
+import { User, Ticket, Heart, Bookmark, BarChart3, Bell, MessageSquare } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { fetchProfile } from "../../store/profileSlice";
@@ -11,8 +11,9 @@ import FavoritesTab from "./tabs/FavoritesTab";
 import WishlistTab from "./tabs/WishlistTab";
 import StatsTab from "./tabs/StatsTab";
 import NotificationsTab from "./tabs/NotificationsTab";
+import ReviewsTab from "./tabs/ReviewsTab";
 
-type TabId = "account" | "tickets" | "favorites" | "wishlist" | "stats" | "notifications";
+type TabId = "account" | "tickets" | "favorites" | "wishlist" | "stats" | "notifications" | "reviews";
 
 interface TabConfig {
   id: TabId;
@@ -28,6 +29,7 @@ const TABS: TabConfig[] = [
   { id: "wishlist",      label: "Wishlist",    icon: Bookmark },
   { id: "stats",         label: "Stats",  icon: BarChart3 },
   { id: "notifications", label: "Notifications",  icon: Bell },
+  { id: "reviews",       label: "My reviews",   icon: MessageSquare },
 ];
 
 const TAB_COMPONENTS: Record<TabId, React.FC> = {
@@ -37,6 +39,7 @@ const TAB_COMPONENTS: Record<TabId, React.FC> = {
   wishlist:      WishlistTab,
   stats:         StatsTab,
   notifications: NotificationsTab,
+  reviews:       ReviewsTab,
 };
 
 const Profile: React.FC = () => {

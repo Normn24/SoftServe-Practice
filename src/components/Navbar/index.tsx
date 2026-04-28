@@ -64,20 +64,24 @@ const Navbar: React.FC = () => {
           </NavLink>
           <NavLink
             to={RoutePaths.NewMovies}
-            className="text-gray-400 hover:text-white"
+            className={({ isActive }) =>
+                isActive
+                  ? "relative text-white after:absolute after:-bottom-2.5 after:left-0 after:w-full after:h-1 after:bg-yellow-400 after:rounded-md"
+                  : "text-gray-400 hover:text-white"
+              }
           >
             Coming Soon
           </NavLink>
           {token && (
             <NavLink
-              to="/favorites"
+              to="/profile"
               className={({ isActive }) =>
                 isActive
                   ? "relative text-white after:absolute after:-bottom-2.5 after:left-0 after:w-full after:h-1 after:bg-yellow-400 after:rounded-md"
                   : "text-gray-400 hover:text-white"
               }
             >
-              Favorites
+              Profile
             </NavLink>
           )}
         </nav>

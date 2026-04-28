@@ -53,7 +53,6 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activeTab, onTabChange,
         )}
       </div>
 
-      {/* Navigation */}
       <nav className="flex flex-col gap-1">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -80,7 +79,6 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activeTab, onTabChange,
         })}
       </nav>
 
-      {/* Logout */}
       <button
         onClick={handleLogout}
         className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-red-400 hover:bg-red-400/10 transition-all"
@@ -88,6 +86,7 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activeTab, onTabChange,
         <LogOut className="w-[18px] h-[18px]" />
         Logout
       </button>
+
     </div>
   );
 };
