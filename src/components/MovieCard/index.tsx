@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Session } from "../../types/authTypes";
 import { IoTicket } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 import { RoutePaths } from "../../utils/EnumsFile";
 import { LazyReactPlayer } from "../LazyReactPlayer";
+import { useClosestSessions } from "../../hooks/UseClosestSessions";
 
 interface MovieCardProps {
   movieId: string;
@@ -18,13 +19,6 @@ interface MovieCardProps {
   isActive: boolean;
   videos: { key: string; type: string; site: string } | null;
 }
-
-const formatDateToYYYYMMDD = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
 
 const MovieCard: React.FC<MovieCardProps> = ({
   movieId,
@@ -41,77 +35,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
 }) => {
   const [showTrailer, setShowTrailer] = useState(false);
 
-  const closestSessionInfo = useMemo(() => {
-    if (!sessions || sessions.length === 0) {
-      return { label: "", times: [], dateString: null };
-    }
-
-    const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1);
-
-    const todayStr = today.toDateString();
-    const tomorrowStr = tomorrow.toDateString();
-
-    const todaySessions = sessions.filter(
-      (s) => new Date(s.dateTime).toDateString() === todayStr
-    );
-    if (todaySessions.length > 0) {
-      return {
-        label: "Sessions today:",
-        times: todaySessions.map((s) =>
-          new Date(s.dateTime).toLocaleTimeString("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        ),
-        dateString: formatDateToYYYYMMDD(today),
-      };
-    }
-
-    const tomorrowSessions = sessions.filter(
-      (s) => new Date(s.dateTime).toDateString() === tomorrowStr
-    );
-    if (tomorrowSessions.length > 0) {
-      return {
-        label: "Sessions tomorrow:",
-        times: tomorrowSessions.map((s) =>
-          new Date(s.dateTime).toLocaleTimeString("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        ),
-        dateString: formatDateToYYYYMMDD(tomorrow),
-      };
-    }
-
-    const futureSessions = sessions
-      .filter((s) => new Date(s.dateTime) > today)
-      .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
-
-    if (futureSessions.length > 0) {
-      const closestDate = new Date(futureSessions[0].dateTime);
-      const formattedDisplayDate = closestDate.toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "long",
-      });
-      const sessionsOnDate = futureSessions.filter(
-        (s) => new Date(s.dateTime).toDateString() === closestDate.toDateString()
-      );
-      return {
-        label: `Sessions ${formattedDisplayDate}:`,
-        times: sessionsOnDate.map((s) =>
-          new Date(s.dateTime).toLocaleTimeString("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        ),
-        dateString: formatDateToYYYYMMDD(closestDate),
-      };
-    }
-
-    return { label: "", times: [], dateString: null };
-  }, [sessions]);
+  const closestSessionInfo = useClosestSessions(sessions);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;

@@ -21,3 +21,13 @@ export const isTokenExpired = (token: string): boolean => {
     return true;
   }
 };
+
+export const getRoleFromToken = (token: string): string | null => {
+  try {
+    const [, payload] = token.split(".");
+    const decoded = JSON.parse(atob(payload)) as { role?: string };
+    return decoded.role ?? null;
+  } catch {
+    return null;
+  }
+};

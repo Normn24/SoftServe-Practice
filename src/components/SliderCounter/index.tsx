@@ -19,8 +19,8 @@ const SliderCounter: React.FC<SliderCounterProps> = ({
       <button
         onClick={() => onScroll("up")}
         disabled={currentIndex === 0}
-        className="disabled:opacity-30 disabled:cursor-not-allowed p-1 transition-opacity"
-        aria-label="Попередній слайд"
+        className="disabled:opacity-30 disabled:cursor-not-allowed p-1 transition-opacity cursor-pointer"
+        aria-label="Previous slide"
       >
         <ChevronUp size={24} strokeWidth={1.5} />
       </button>
@@ -37,8 +37,8 @@ const SliderCounter: React.FC<SliderCounterProps> = ({
       <button
         onClick={() => onScroll("down")}
         disabled={currentIndex === totalCount - 1}
-        className="disabled:opacity-30 disabled:cursor-not-allowed p-1 transition-opacity"
-        aria-label="Наступний слайд"
+        className="disabled:opacity-30 disabled:cursor-not-allowed p-1 transition-opacity cursor-pointer"
+        aria-label="Next slide"
       >
         <ChevronDown size={24} strokeWidth={1.5} />
       </button>

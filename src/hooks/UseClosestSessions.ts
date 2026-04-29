@@ -13,10 +13,6 @@ interface ClosestSessionInfo {
   dateString: string | null;
 }
 
-/**
- * useClosestSessions — повторна логіка з MovieCard,
- * визначає найближчі сесії для відображення на головній сторінці.
- */
 export const useClosestSessions = (sessions: Session[]): ClosestSessionInfo => {
   return useMemo(() => {
     if (!sessions || sessions.length === 0) {

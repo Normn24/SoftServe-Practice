@@ -2,6 +2,7 @@ import React from "react";
 import SeatGrid from "./SeatGrid";
 import { SessionData } from "../../types/authTypes";
 import { NavLink, useParams } from "react-router-dom";
+import { formatDisplayTime } from "../../utils/dateUtils";
 
 interface SessionDetailsProps {
   session: SessionData;
@@ -11,13 +12,7 @@ const SessionDetails: React.FC<SessionDetailsProps> = ({ session }) => {
   const { movieId } = useParams<{
     movieId: string;
   }>();
-  const sessionTime = new Date(session.session.dateTime).toLocaleTimeString(
-    "en-GB",
-    {
-      hour: "2-digit",
-      minute: "2-digit",
-    }
-  );
+  const sessionTime = formatDisplayTime(session.session.dateTime);
   const freeSeats = session.session.seats.filter((s) => !s.isBooked).length;
   const priceInfo = `from ${session.session.price}₴`;
 

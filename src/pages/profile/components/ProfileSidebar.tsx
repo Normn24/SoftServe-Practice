@@ -15,13 +15,17 @@ interface ProfileSidebarProps {
 const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activeTab, onTabChange, tabs }) => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.profile.user);
-  const { data: tickets = [] } = useGetUserTicketsQuery();
+  const { data } = useGetUserTicketsQuery({ 
+    page: 1, 
+    limit: 999, 
+    status: "all" 
+  });
 
   const email = user[0]?.email ?? "";
   const displayName = email.split("@")[0] ?? "User";
   const initials = displayName.slice(0, 2).toUpperCase();
-
-  const totalSpent = tickets.reduce((acc, t) => acc + (t.sessionPrice ?? 0), 0);
+  const ticketsArray = data?.tickets ?? [];
+  const totalSpent = ticketsArray.reduce((acc, t) => acc + (t.sessionPrice ?? 0), 0);
 
   const handleLogout = () => {
     dispatch(clearToken());
@@ -30,7 +34,6 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activeTab, onTabChange,
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Avatar card */}
       <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 flex flex-col items-center gap-4">
         <div className="w-20 h-20 rounded-full bg-yellow-400/15 border-2 border-yellow-400/40 flex items-center justify-center">
           <span className="text-2xl font-bold text-yellow-400">{initials}</span>

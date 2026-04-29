@@ -11,12 +11,7 @@ import SeatGrid from "../components/SeatSelection/SeatGrid";
 import { FaArrowLeft, FaInfoCircle } from "react-icons/fa";
 import ModalWindow from "../components/ModalWindow";
 import AuthForm from "../components/Forms/AuthForm";
-
-const formatSessionTime = (dateTimeString: string | number): string =>
-  new Date(dateTimeString).toLocaleTimeString("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+import { formatDisplayTime } from "../utils/dateUtils";
 
 interface SelectableSeat extends Seat {
   isSelected: boolean;
@@ -99,7 +94,7 @@ const SeatSelectionPage: React.FC = () => {
         totalTickets,
         movieTitle: movie?.title,
         moviePoster: movie?.poster_path,
-        sessionTime: formatSessionTime(currentSession.dateTime),
+        sessionTime: formatDisplayTime(currentSession.dateTime),
         sessionDate: new Date(currentSession.dateTime).toLocaleDateString(
           "en-GB",
           { day: "numeric", month: "long" }
@@ -127,7 +122,7 @@ const SeatSelectionPage: React.FC = () => {
     );
   }
 
-  const sessionTime = formatSessionTime(currentSession.dateTime);
+  const sessionTime = formatDisplayTime(currentSession.dateTime);
   const sessionDate = new Date(currentSession.dateTime).toLocaleDateString(
     "en-GB",
     { day: "numeric", month: "long" }

@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { CalendarDays, Film, Trash2, Ticket, MessageSquarePlus, CheckCircle } from "lucide-react";
+import { useCallback, useState } from "react";
+import { CalendarDays, Film, Trash2, Ticket, MessageSquarePlus, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   useGetUserTicketsQuery,
@@ -141,94 +141,76 @@ const EmptyState: React.FC<{ tab: InnerTab }> = ({ tab }) => (
 
 const TicketsTab: React.FC = () => {
   const { showToast } = useToastContext();
-  const { data: tickets = [], isLoading } = useGetUserTicketsQuery();
-  const [deleteTicket] = useDeleteTicketMutation();
   const [innerTab, setInnerTab] = useState<InnerTab>("active");
+  const [page, setPage] = useState(1);
+  const limit = 5; 
+
+  const { data, isLoading, isFetching } = useGetUserTicketsQuery({ 
+    page, 
+    limit, 
+    status: innerTab 
+  });
+  
+  const [deleteTicket] = useDeleteTicketMutation();
   const [reviewTarget, setReviewTarget] = useState<UserTicket | null>(null);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     try {
       await deleteTicket(id).unwrap();
       showToast("Ticket deleted", "success");
+      if (data?.tickets.length === 1 && page > 1) {
+        setPage((p) => p - 1);
+      }
     } catch {
       showToast("Error deleting ticket", "error");
     }
-  };
+  }, [deleteTicket, showToast, data?.tickets.length, page]);
 
-  const { active, used } = useMemo(() => {
-    const now = new Date();
-    return {
-      active: tickets.filter(
-        (t) =>
-          !t.isUsed &&
-          (t.sessionDateTime ? new Date(t.sessionDateTime) >= now : true)
-      ),
-      used: tickets.filter(
-        (t) =>
-          t.isUsed ||
-          (t.sessionDateTime ? new Date(t.sessionDateTime) < now : false)
-      ),
-    };
-  }, [tickets]);
+  const handleTabChange = useCallback((tab: InnerTab) => {
+    setInnerTab(tab);
+    setPage(1); 
+  }, []);
 
-  const displayed = innerTab === "active" ? active : used;
+  const tickets = data?.tickets ?? [];
+  const pagination = data?.pagination;
 
   return (
     <>
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-wide">
-            My tickets
-          </h1>
+          <h1 className="text-3xl font-bold text-white tracking-wide">My tickets</h1>
           <p className="text-gray-400 text-sm mt-1">
-            {isLoading
-              ? "Loading..."
-              : `${tickets.length} tickets in total`}
+            {isLoading ? "Loading..." : `${pagination?.totalTickets ?? 0} tickets found`}
           </p>
         </div>
 
         <div className="flex gap-1 bg-gray-900 border border-gray-800 rounded-xl p-1 w-fit">
           {(["active", "used"] as InnerTab[]).map((tab) => {
-            const count = tab === "active" ? active.length : used.length;
             const isActive = innerTab === tab;
             return (
               <button
                 key={tab}
-                onClick={() => setInnerTab(tab)}
+                onClick={() => handleTabChange(tab)}
                 className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? "bg-yellow-400 text-black"
-                    : "text-gray-400 hover:text-white"
+                  isActive ? "bg-yellow-400 text-black" : "text-gray-400 hover:text-white"
                 }`}
+                disabled={isFetching}
               >
                 {tab === "active" ? "Active" : "Used"}
-                {!isLoading && count > 0 && (
-                  <span
-                    className={`text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center ${
-                      isActive
-                        ? "bg-black/20 text-black"
-                        : "bg-gray-800 text-gray-300"
-                    }`}
-                  >
-                    {count}
-                  </span>
-                )}
               </button>
             );
           })}
         </div>
 
-        {isLoading ? (
+        {isLoading || isFetching ? (
           <div className="flex flex-col gap-3">
-            {[1, 2, 3].map((i) => (
-              <TicketSkeleton key={i} />
-            ))}
+            {[1, 2, 3, 4, 5].map((i) => <TicketSkeleton key={i} />)}
           </div>
-        ) : displayed.length === 0 ? (
+        ) : tickets.length === 0 ? (
           <EmptyState tab={innerTab} />
         ) : (
           <div className="flex flex-col gap-3">
-            {displayed.map((t) => (
+            {tickets.map((t) => (
               <TicketCard
                 key={t._id}
                 ticket={t}
@@ -237,6 +219,28 @@ const TicketsTab: React.FC = () => {
                 onReview={setReviewTarget}
               />
             ))}
+          </div>
+        )}
+
+        {pagination && pagination.totalPages > 1 && (
+          <div className="flex items-center justify-between mt-4 bg-gray-900 p-3 rounded-xl border border-gray-800">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1 || isFetching}
+              className="p-2 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition text-white"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <span className="text-sm font-medium text-gray-400">
+              Page <span className="text-white">{page}</span> of {pagination.totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
+              disabled={page === pagination.totalPages || isFetching}
+              className="p-2 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition text-white"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
         )}
       </div>

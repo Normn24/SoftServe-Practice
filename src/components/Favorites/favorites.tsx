@@ -4,7 +4,6 @@ import {
   useDeleteFavoriteMutation,
 } from "../../services/favoritesApi";
 import Loader from "../Loader";
-import "../../favorites_style.css";
 
 const FavoritesPage: React.FC = () => {
   const { data: items = [], isLoading, isError } = useGetFavoritesQuery();

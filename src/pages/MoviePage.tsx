@@ -12,13 +12,7 @@ import Loader from "../components/Loader";
 import { IoTicket } from "react-icons/io5";
 import { FaHeart, FaHome } from "react-icons/fa";
 import { RoutePaths } from "../utils/EnumsFile";
-
-const formatDateToYYYYMMDD = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
+import { formatDateToYYYYMMDD } from "../utils/dateUtils";
 
 const MoviePage: React.FC = () => {
   const { movieId } = useParams<{ movieId: string }>();
@@ -43,6 +37,8 @@ const MoviePage: React.FC = () => {
   const closestSession = movie.sessions
     .filter((s) => new Date(s.dateTime) >= today)
     .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())[0];
+  const hasSessions = movie.sessions.some(s => new Date(s.dateTime) > new Date());
+
 
   const sessionsPath = RoutePaths.MOVIESESSIONS.replace(
     ":movieId",
@@ -86,14 +82,15 @@ const MoviePage: React.FC = () => {
       />
 
       <div className="fixed z-20 bottom-12 right-8 flex gap-4">
-        <NavLink
-          to={linkToSessions}
-          className="w-max bg-yellow-400 hover:bg-yellow-500 text-black py-4 px-6 rounded-full transition font-bold text-xl flex items-center gap-2"
-        >
-          <IoTicket style={{ width: "30px", height: "30px" }} />
-          Select sessions
-        </NavLink>
-
+        {hasSessions && (
+          <NavLink
+            to={linkToSessions}
+            className="w-max bg-yellow-400 hover:bg-yellow-500 text-black py-4 px-6 rounded-full transition font-bold text-xl flex items-center gap-2"
+          >
+            <IoTicket style={{ width: "30px", height: "30px" }} />
+            Select sessions
+          </NavLink>
+        )}
         <button
           onClick={() => movieId && addFavorite(+movieId)}
           disabled={isFavoriteLoading}
@@ -104,7 +101,7 @@ const MoviePage: React.FC = () => {
         </button>
       </div>
 
-      <TrailerSection videos={movie.videos} />
+      {movie.videos?.length > 0 && <TrailerSection videos={movie.videos} />}
       <ActorsSection cast={movie.cast} />
       <OtherMovies movieId={movie.id} />
     </div>

@@ -13,6 +13,23 @@ export interface UserTicket {
   sessionPrice: number | null;
 }
 
+export interface PaginationMeta {
+  totalTickets: number;
+  totalPages: number;
+  currentPage: number;
+}
+
+export interface GetTicketsResponse {
+  tickets: UserTicket[];
+  pagination: PaginationMeta;
+}
+
+export interface GetTicketsArgs {
+  page: number;
+  limit?: number;
+  status: "active" | "used" | "all";
+}
+
 export interface ValidateTicketResponse {
   valid: boolean;
   message: string;
@@ -28,9 +45,9 @@ export const ticketsApi = createApi({
   baseQuery: baseQueryWithAuth,
   tagTypes: ["Tickets"],
   endpoints: (builder) => ({
-
-    getUserTickets: builder.query<UserTicket[], void>({
-      query: () => "/tickets/me",
+    getUserTickets: builder.query<GetTicketsResponse, GetTicketsArgs>({
+      query: ({ page, limit = 10, status }) => 
+        `/tickets/me?page=${page}&limit=${limit}&status=${status}`,
       providesTags: ["Tickets"],
     }),
 
@@ -48,7 +65,6 @@ export const ticketsApi = createApi({
         method: "PUT",
       }),
     }),
-
   }),
 });
 

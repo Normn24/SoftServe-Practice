@@ -54,7 +54,6 @@ const PaymentPage: React.FC = () => {
     sessionDate,
   } = (location.state || {}) as PaymentLocationState;
 
-  // Одна мутація — викликаємо її для кожного місця
   const [bookSeat, { isLoading }] = useBookSeatMutation();
 
   const handleSubmitPayment = async () => {
