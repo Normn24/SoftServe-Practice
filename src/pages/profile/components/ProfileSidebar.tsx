@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Calendar, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { AppDispatch, RootState } from "../../../store/store";
 import { clearToken } from "../../../store/authSlice";
 import { navigate } from "../../../utils/navigationRef";
@@ -38,10 +38,6 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activeTab, onTabChange,
         <div className="text-center">
           <h2 className="text-lg font-semibold text-white">{displayName}</h2>
           <p className="text-sm text-gray-400">{email}</p>
-        </div>
-        <div className="flex items-center gap-1.5 text-xs text-gray-400">
-          <Calendar className="w-3.5 h-3.5" />
-          <span>CD Player Cinema</span>
         </div>
         {totalSpent > 0 && (
           <div className="w-full pt-3 border-t border-gray-800">

@@ -106,7 +106,8 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
 
   const handleSubmit = async () => {
     try {
-      await createReview({ movieId, ticketId, ratings, comment }).unwrap();
+      await createReview({ movieId, movieTitle, ticketId, ratings, comment }).unwrap();
+      console.log(movieTitle);
       showToast("Review published successfully!", "success");
       onClose();
     } catch (err: unknown) {

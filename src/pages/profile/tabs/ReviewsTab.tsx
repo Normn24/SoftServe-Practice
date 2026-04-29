@@ -44,7 +44,7 @@ const ReviewCard: React.FC<{ review: Review }> = ({ review }) => {
           to={`/movies/${review.movieId}`}
           className="font-semibold text-white hover:text-yellow-400 transition-colors"
         >
-          Movie #{review.movieId}
+          {review.movieTitle}
         </NavLink>
         <div className="flex items-center gap-1.5 shrink-0">
           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />

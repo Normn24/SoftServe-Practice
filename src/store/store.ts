@@ -7,6 +7,7 @@ import { sessionsApi } from "../services/sessionsApi";
 import { moviesApi } from "../services/moviesApi";
 import { ticketsApi } from "../services/ticketsApi";
 import { reviewsApi } from "../services/reviewsApi";
+import { wishlistApi } from "../services/wishlistApi";
 
 const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ const store = configureStore({
     [favoritesApi.reducerPath]: favoritesApi.reducer,
     [ticketsApi.reducerPath]: ticketsApi.reducer,
     [reviewsApi.reducerPath]: reviewsApi.reducer,
+    [wishlistApi.reducerPath]: wishlistApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -25,7 +27,8 @@ const store = configureStore({
       .concat(sessionsApi.middleware)
       .concat(favoritesApi.middleware)
       .concat(ticketsApi.middleware)
-      .concat(reviewsApi.middleware),
+      .concat(reviewsApi.middleware)
+      .concat(wishlistApi.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

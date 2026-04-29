@@ -12,6 +12,7 @@ export interface Ratings {
 export interface Review {
   _id: string;
   movieId: number;
+  movieTitle: string;
   ticketId: string;
   ratings: Ratings;
   comment: string;
@@ -21,6 +22,7 @@ export interface Review {
 
 export interface CreateReviewPayload {
   movieId: number;
+  movieTitle: string;
   ticketId: string;
   ratings: Ratings;
   comment: string;
