@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithAuth } from "../api/baseQuery";
 import { Session, SessionData, Seat } from "../types/authTypes";
+import { ticketsApi } from "./ticketsApi";
 
 export interface SessionPayload {
   dateTime: string;
@@ -91,6 +92,14 @@ export const sessionsApi = createApi({
       invalidatesTags: (_result, _error, { sessionId }) => [
         { type: "SingleSession", id: sessionId },
       ],
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(ticketsApi.util.invalidateTags(["Tickets"]));
+        } catch (e) {
+          console.error("❌ onQueryStarted error:", e);
+        }
+      },
     }),
 
   }),

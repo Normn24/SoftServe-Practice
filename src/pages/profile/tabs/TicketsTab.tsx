@@ -145,11 +145,10 @@ const TicketsTab: React.FC = () => {
   const [page, setPage] = useState(1);
   const limit = 5; 
 
-  const { data, isLoading, isFetching } = useGetUserTicketsQuery({ 
-    page, 
-    limit, 
-    status: innerTab 
-  });
+  const { data, isLoading, isFetching } = useGetUserTicketsQuery(
+    { page, limit, status: innerTab },
+    { refetchOnMountOrArgChange: true }
+  );
   
   const [deleteTicket] = useDeleteTicketMutation();
   const [reviewTarget, setReviewTarget] = useState<UserTicket | null>(null);

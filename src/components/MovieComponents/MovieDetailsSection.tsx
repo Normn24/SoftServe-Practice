@@ -2,8 +2,10 @@ import { FC } from "react";
 import { Genre, ProductionCompany } from "../../types/movieTypes";
 import { GenreItem } from "./GenreItem";
 import { MovieDetailItem } from "./MovieDetailItem";
+import { MovieRatingBadge } from "./MovieRatingBadge";
 
 interface Props {
+  id: number;
   genres: Genre[];
   origin_country: string[];
   overview: string;
@@ -15,6 +17,7 @@ interface Props {
 }
 
 export const MovieDetailsSection: FC<Props> = ({
+  id,
   genres,
   origin_country,
   overview,
@@ -80,6 +83,7 @@ export const MovieDetailsSection: FC<Props> = ({
         <MovieDetailItem title="Country of origin" value={origin_country} />
         <MovieDetailItem title="Release date" value={release_date} />
         <MovieDetailItem title="Movie duration" value={runtime} />
+        <MovieRatingBadge movieId={id} />
       </div>
     </div>
   );

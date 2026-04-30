@@ -1,10 +1,11 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { LogOut } from "lucide-react";
-import { AppDispatch, RootState } from "../../../store/store";
+import { AppDispatch } from "../../../store/store";
 import { clearToken } from "../../../store/authSlice";
 import { navigate } from "../../../utils/navigationRef";
 import { RoutePaths } from "../../../utils/EnumsFile";
-import { useGetUserTicketsQuery } from "../../../services/ticketsApi";
+import { useGetUserTicketsQuery, GetTicketsResponse } from "../../../services/ticketsApi";
+import { useGetProfileQuery } from "../../../services/profileApi";
 
 interface ProfileSidebarProps {
   activeTab: string;
@@ -14,17 +15,17 @@ interface ProfileSidebarProps {
 
 const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ activeTab, onTabChange, tabs }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.profile.user);
+  const { data: user } = useGetProfileQuery();
   const { data } = useGetUserTicketsQuery({ 
     page: 1, 
     limit: 999, 
     status: "all" 
-  });
+  }, { refetchOnMountOrArgChange: true });
 
-  const email = user[0]?.email ?? "";
+  const email = user?.[0]?.email ?? "";
   const displayName = email.split("@")[0] ?? "User";
   const initials = displayName.slice(0, 2).toUpperCase();
-  const ticketsArray = data?.tickets ?? [];
+  const ticketsArray = (data as GetTicketsResponse | undefined)?.tickets ?? [];
   const totalSpent = ticketsArray.reduce((acc, t) => acc + (t.sessionPrice ?? 0), 0);
 
   const handleLogout = () => {

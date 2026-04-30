@@ -1,6 +1,9 @@
-import { Star, MessageSquare } from "lucide-react";
+import React, { useState } from "react";
+import { Star, MessageSquare, Edit2, Trash2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useGetUserReviewsQuery, Review, Ratings } from "../../../services/reviewsApi";
+import { useGetUserReviewsQuery, useDeleteReviewMutation, Review, Ratings } from "../../../services/reviewsApi";
+import ReviewModal from "../../../components/ReviewModal";
+import { useToastContext } from "../../../components/ToastContext/context";
 
 const CRITERIA_LABELS: Record<keyof Ratings, string> = {
   plot:      "Plot",
@@ -30,7 +33,11 @@ const ReviewSkeleton = () => (
   </div>
 );
 
-const ReviewCard: React.FC<{ review: Review }> = ({ review }) => {
+const ReviewCard: React.FC<{ 
+  review: Review; 
+  onEdit: (review: Review) => void;
+  onDelete: (review: Review) => void;
+}> = ({ review, onEdit, onDelete }) => {
   const date = new Date(review.createdAt).toLocaleDateString("uk-UA", {
     day: "2-digit",
     month: "short",
@@ -38,7 +45,7 @@ const ReviewCard: React.FC<{ review: Review }> = ({ review }) => {
   });
 
   return (
-    <div className="bg-gray-900 rounded-xl border border-gray-800 p-5 flex flex-col gap-4 hover:border-yellow-400/20 transition">
+    <div className="bg-gray-900 rounded-xl border border-gray-800 p-5 flex flex-col gap-4 hover:border-yellow-400/20 transition group">
       <div className="flex items-start justify-between gap-4">
         <NavLink
           to={`/movies/${review.movieId}`}
@@ -46,12 +53,30 @@ const ReviewCard: React.FC<{ review: Review }> = ({ review }) => {
         >
           {review.movieTitle}
         </NavLink>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-          <span className={`text-lg font-bold ${getScoreColor(review.averageRating)}`}>
-            {review.averageRating}
-          </span>
-          <span className="text-gray-500 text-sm">/10</span>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+            <span className={`text-lg font-bold ${getScoreColor(review.averageRating)}`}>
+              {review.averageRating}
+            </span>
+            <span className="text-gray-500 text-sm">/10</span>
+          </div>
+          <div className="opacity-0 group-hover:opacity-100 flex items-center gap-2 transition-opacity">
+            <button 
+              onClick={() => onEdit(review)}
+              className="p-1.5 text-gray-400 hover:text-yellow-400 hover:bg-yellow-400/10 rounded-md transition"
+              title="Edit review"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
+            <button 
+              onClick={() => onDelete(review)}
+              className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-md transition"
+              title="Delete review"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -84,6 +109,21 @@ const ReviewCard: React.FC<{ review: Review }> = ({ review }) => {
 
 const ReviewsTab: React.FC = () => {
   const { data: reviews = [], isLoading } = useGetUserReviewsQuery();
+  const [deleteReview] = useDeleteReviewMutation();
+  const { showToast } = useToastContext();
+  const [editingReview, setEditingReview] = useState<Review | null>(null);
+
+  const handleDelete = async (review: Review) => {
+    if (window.confirm("Are you sure you want to delete this review?")) {
+      try {
+        await deleteReview({ reviewId: review._id, movieId: review.movieId, ticketId: review.ticketId }).unwrap();
+        showToast("Review deleted successfully", "success");
+      } catch (err) {
+        console.log(err);
+        showToast("Failed to delete review");
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -112,8 +152,25 @@ const ReviewsTab: React.FC = () => {
 
       {!isLoading && reviews.length > 0 && (
         <div className="flex flex-col gap-4">
-          {reviews.map((r) => <ReviewCard key={r._id} review={r} />)}
+          {reviews.map((r) => (
+            <ReviewCard 
+              key={r._id} 
+              review={r} 
+              onEdit={setEditingReview} 
+              onDelete={handleDelete} 
+            />
+          ))}
         </div>
+      )}
+
+      {editingReview && (
+        <ReviewModal
+          movieId={editingReview.movieId}
+          movieTitle={editingReview.movieTitle}
+          ticketId={editingReview.ticketId}
+          onClose={() => setEditingReview(null)}
+          initialReview={editingReview}
+        />
       )}
     </div>
   );

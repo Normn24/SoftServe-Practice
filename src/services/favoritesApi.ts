@@ -35,6 +35,7 @@ export const favoritesApi = createApi({
           patchResult.undo();
         }
       },
+      invalidatesTags: ["Favorites"],
     }),
   }),
 });

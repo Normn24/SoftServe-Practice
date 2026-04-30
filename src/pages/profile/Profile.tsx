@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Ticket, Heart, Bookmark, BarChart3, Bell, MessageSquare } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { fetchProfile } from "../../store/profileSlice";
+
 import ProfileSidebar from "./components/ProfileSidebar";
 import AccountTab from "./tabs/AccountTab";
 import TicketsTab from "./tabs/TicketsTab";
@@ -43,12 +41,7 @@ const TAB_COMPONENTS: Record<TabId, React.FC> = {
 };
 
 const Profile: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const [activeTab, setActiveTab] = useState<TabId>("account");
-
-  useEffect(() => {
-    dispatch(fetchProfile());
-  }, [dispatch]);
 
   const ActiveComponent = TAB_COMPONENTS[activeTab];
 

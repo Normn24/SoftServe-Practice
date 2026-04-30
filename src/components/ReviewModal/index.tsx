@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { X, Star, Send } from "lucide-react";
-import { useCreateReviewMutation, Ratings } from "../../services/reviewsApi";
+import { useCreateReviewMutation, useUpdateReviewMutation, Ratings, Review } from "../../services/reviewsApi";
 import { useToastContext } from "../ToastContext/context";
 
 interface ReviewModalProps {
@@ -8,6 +8,7 @@ interface ReviewModalProps {
   movieTitle: string;
   ticketId: string;
   onClose: () => void;
+  initialReview?: Review;
 }
 
 const CRITERIA: { key: keyof Ratings; label: string; description: string }[] = [
@@ -83,18 +84,22 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
   movieTitle,
   ticketId,
   onClose,
+  initialReview,
 }) => {
   const { showToast } = useToastContext();
-  const [createReview, { isLoading }] = useCreateReviewMutation();
+  const [createReview, { isLoading: isCreating }] = useCreateReviewMutation();
+  const [updateReview, { isLoading: isUpdating }] = useUpdateReviewMutation();
 
-  const [ratings, setRatings] = useState<Ratings>({
+  const isLoading = isCreating || isUpdating;
+
+  const [ratings, setRatings] = useState<Ratings>(initialReview?.ratings || {
     plot: 7,
     acting: 7,
     visuals: 7,
     sound: 7,
     direction: 7,
   });
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState(initialReview?.comment || "");
 
   const averageRating = (
     Object.values(ratings).reduce((a, b) => a + b, 0) / 5
@@ -106,16 +111,20 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
 
   const handleSubmit = async () => {
     try {
-      await createReview({ movieId, movieTitle, ticketId, ratings, comment }).unwrap();
-      console.log(movieTitle);
-      showToast("Review published successfully!", "success");
+      if (initialReview) {
+        await updateReview({ reviewId: initialReview._id, movieId, ticketId, ratings, comment }).unwrap();
+        showToast("Review updated successfully!", "success");
+      } else {
+        await createReview({ movieId, movieTitle, ticketId, ratings, comment }).unwrap();
+        showToast("Review published successfully!", "success");
+      }
       onClose();
     } catch (err: unknown) {
       const status = (err as { status?: number })?.status;
       if (status === 409) {
         showToast("You have already left a review for this ticket", "error");
       } else {
-        showToast("Failed to publish review", "error");
+        showToast(`Failed to ${initialReview ? 'update' : 'publish'} review`, "error");
       }
     }
   };
@@ -131,7 +140,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
       <div className="w-full max-w-lg bg-gray-900 rounded-2xl border border-gray-800 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
         <div className="flex items-start justify-between p-6 border-b border-gray-800 shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-white">Your review</h2>
+            <h2 className="text-lg font-bold text-white">{initialReview ? 'Edit your review' : 'Your review'}</h2>
             <p className="text-gray-400 text-sm mt-0.5 truncate max-w-[320px]">
               {movieTitle}
             </p>
@@ -187,7 +196,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
             className="w-full flex items-center justify-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-3 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send className="w-4 h-4" />
-            {isLoading ? "Publishing..." : "Publish review"}
+            {isLoading ? (initialReview ? "Updating..." : "Publishing...") : (initialReview ? "Update review" : "Publish review")}
           </button>
         </div>
       </div>

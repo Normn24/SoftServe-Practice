@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 import { skipToken } from "@reduxjs/toolkit/query/react";
 import { useGetSingleMovieQuery } from "../services/moviesApi";
-import { useAddFavoriteMutation } from "../services/favoritesApi";
+import { useAddFavoriteMutation, useDeleteFavoriteMutation, useGetFavoritesQuery } from "../services/favoritesApi";
 import { ActorsSection } from "../components/MovieComponents/ActorsSection";
 import { BackdropSection } from "../components/MovieComponents/BackdropSection";
 import { MovieDetailsSection } from "../components/MovieComponents/MovieDetailsSection";
@@ -22,8 +24,18 @@ const MoviePage: React.FC = () => {
     isLoading,
   } = useGetSingleMovieQuery(movieId ? +movieId : skipToken);
 
-  const [addFavorite, { isLoading: isFavoriteLoading }] =
-    useAddFavoriteMutation();
+  const [addFavorite] = useAddFavoriteMutation();
+  const [deleteFavorite] = useDeleteFavoriteMutation();  
+  
+  const token = useSelector((state: RootState) => state.auth.token);
+  const isAuthenticated = !!token;
+
+  const { data: favorites = [] } = useGetFavoritesQuery(undefined, { skip: !isAuthenticated });
+  const [isFav, setIsFav] = useState(false);
+
+  useEffect(() => {
+    setIsFav(favorites.some(f => f.id === +movieId!));
+  }, [favorites, movieId]);  
 
   if (isLoading || !movie) {
     return (
@@ -71,6 +83,7 @@ const MoviePage: React.FC = () => {
       </div>
 
       <MovieDetailsSection
+        id={+movieId!}
         genres={movie.genres}
         origin_country={movie.origin_country}
         overview={movie.overview}
@@ -91,14 +104,18 @@ const MoviePage: React.FC = () => {
             Select sessions
           </NavLink>
         )}
-        <button
-          onClick={() => movieId && addFavorite(+movieId)}
-          disabled={isFavoriteLoading}
-          className="w-16 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-gray-700 transition-colors focus:outline-none ring-2 ring-yellow-500 disabled:opacity-50"
-          aria-label="Add to favorites"
-        >
-          <FaHeart className="text-white text-sm" />
-        </button>
+        {isAuthenticated && (
+          <button
+            onClick={() => isFav ? deleteFavorite(+movieId!) : addFavorite(+movieId!)}
+            className={`flex items-center gap-2 py-2 px-6 max-h-[62px] min-h-[62px] rounded-full font-bold transition-colors duration-200 ${
+              isFav
+                ? "bg-red-500 hover:bg-red-600 text-white ring-2 ring-red-500"
+                : "bg-gray-800 hover:bg-gray-700 text-white ring-2 ring-yellow-500"
+            }`}
+          >
+            <FaHeart className={isFav ? "fill-white" : "fill-transparent stroke-white stroke-30"} style={{ width: "18px", height: "18px" }} />
+          </button>
+        )}
       </div>
 
       {movie.videos?.length > 0 && <TrailerSection videos={movie.videos} />}

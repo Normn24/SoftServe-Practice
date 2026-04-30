@@ -33,6 +33,11 @@ export interface CheckReviewResponse {
   reviewId: string | null;
 }
 
+export interface ReviewStats {
+  count: number;
+  avgRating: number;
+}
+
 export const reviewsApi = createApi({
   reducerPath: "reviewsApi",
   baseQuery: baseQueryWithAuth,
@@ -46,6 +51,11 @@ export const reviewsApi = createApi({
 
     getUserReviews: builder.query<Review[], void>({
       query: () => "/reviews/me",
+      providesTags: ["UserReviews"],
+    }),
+
+    getUserReviewStats: builder.query<ReviewStats, void>({
+      query: () => "/reviews/me/stats",
       providesTags: ["UserReviews"],
     }),
 
@@ -67,12 +77,42 @@ export const reviewsApi = createApi({
       ],
     }),
 
+    updateReview: builder.mutation<Review, { reviewId: string; ratings?: Partial<Ratings>; comment?: string; movieId?: number; ticketId?: string }>({
+      query: ({ reviewId, ...body }) => ({
+        url: `/reviews/${reviewId}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (_r, _e, { movieId, ticketId }) => {
+        const tags: Array<"UserReviews" | { type: "Reviews"; id: string | number }> = ["UserReviews"];
+        if (movieId) tags.push({ type: "Reviews", id: movieId });
+        if (ticketId) tags.push({ type: "Reviews", id: ticketId });
+        return tags;
+      },
+    }),
+
+    deleteReview: builder.mutation<void, { reviewId: string; movieId?: number; ticketId?: string }>({
+      query: ({ reviewId }) => ({
+        url: `/reviews/${reviewId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_r, _e, { movieId, ticketId }) => {
+        const tags: Array<"UserReviews" | { type: "Reviews"; id: string | number }> = ["UserReviews"];
+        if (movieId) tags.push({ type: "Reviews", id: movieId });
+        if (ticketId) tags.push({ type: "Reviews", id: ticketId });
+        return tags;
+      },
+    }),
+
   }),
 });
 
 export const {
   useGetMovieReviewsQuery,
   useGetUserReviewsQuery,
+  useGetUserReviewStatsQuery,
   useCheckReviewExistsQuery,
   useCreateReviewMutation,
+  useUpdateReviewMutation,
+  useDeleteReviewMutation,
 } = reviewsApi;

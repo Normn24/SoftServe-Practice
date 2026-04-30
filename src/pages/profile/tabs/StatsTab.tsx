@@ -1,6 +1,7 @@
-import { Film, Ticket, Wallet, Sparkles, TrendingUp } from "lucide-react";
+import { Film, Ticket, Wallet, Sparkles, TrendingUp, MessageSquare, Star } from "lucide-react";
 import { useGetUserTicketsQuery } from "../../../services/ticketsApi";
 import { useGetFavoritesQuery } from "../../../services/favoritesApi";
+import { useGetUserReviewStatsQuery } from "../../../services/reviewsApi";
 
 interface StatCardProps {
   icon: React.ElementType;
@@ -11,16 +12,18 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ icon: Icon, label, value, accent }) => (
   <div className="bg-gray-900 rounded-xl border border-gray-800 p-5 flex flex-col gap-3">
-    <div
-      className={`w-9 h-9 rounded-lg flex items-center justify-center ${
-        accent ? "bg-yellow-400/15 text-yellow-400" : "bg-gray-800 text-gray-400"
-      }`}
-    >
-      <Icon className="w-[18px] h-[18px]" />
+    <div className="flex items-center gap-2 mb-2">
+      <div
+        className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+          accent ? "bg-yellow-400/15 text-yellow-400" : "bg-gray-800 text-gray-400"
+        }`}
+      >
+        <Icon className="w-[18px] h-[18px]" />
+      </div>
+      <p className="text-md text-gray-400 mt-0.5">{label}</p>
     </div>
     <div>
       <p className="text-2xl font-bold text-white tracking-wide">{value}</p>
-      <p className="text-xs text-gray-400 mt-0.5">{label}</p>
     </div>
   </div>
 );
@@ -34,16 +37,16 @@ const StatCardSkeleton = () => (
 );
 
 const StatsTab: React.FC = () => {
-  const { data: tickets = [], isLoading: ticketsLoading } = useGetUserTicketsQuery();
+  const { data: ticketsResponse, isLoading: ticketsLoading } = useGetUserTicketsQuery({ page: 1, limit: 999, status: "all" });
+  const tickets = ticketsResponse?.tickets ?? [];
   const { data: favorites = [], isLoading: favLoading } = useGetFavoritesQuery();
+  const { data: reviewStats, isLoading: reviewsLoading } = useGetUserReviewStatsQuery();
 
-  const isLoading = ticketsLoading || favLoading;
+  const isLoading = ticketsLoading || favLoading || reviewsLoading;
 
-  // Реальні обчислення з наявних даних
   const totalSpent = tickets.reduce((acc, t) => acc + (t.sessionPrice ?? 0), 0);
   const usedTickets = tickets.filter((t) => t.isUsed).length;
 
-  // Найпопулярніший жанр з улюблених
   const genreCount: Record<string, number> = {};
   favorites.forEach((m) => {
     m.genres?.forEach((g) => {
@@ -53,7 +56,6 @@ const StatsTab: React.FC = () => {
   const favoriteGenre =
     Object.entries(genreCount).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
 
-  // Активність по місяцях (останні 6 місяців з реальних квитків)
   const monthlyData = (() => {
     const months: { month: string; count: number }[] = [];
     const now = new Date();
@@ -80,15 +82,17 @@ const StatsTab: React.FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => <StatCardSkeleton key={i} />)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => <StatCardSkeleton key={i} />)}
         </div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <StatCard icon={Film} label="Movies watched" value={usedTickets} accent />
           <StatCard icon={Ticket} label="Tickets bought" value={tickets.length} />
           <StatCard icon={Wallet} label="Spent" value={`${totalSpent.toLocaleString()}₴`} />
           <StatCard icon={Sparkles} label="Favorite genre" value={favoriteGenre} accent />
+          <StatCard icon={MessageSquare} label="Reviews written" value={reviewStats?.count ?? 0} />
+          <StatCard icon={Star} label="Avg rating given" value={reviewStats?.avgRating ? reviewStats.avgRating.toFixed(1) : "—"} accent />
         </div>
       )}
 
@@ -120,21 +124,6 @@ const StatsTab: React.FC = () => {
           })}
         </div>
       </section>
-
-      {/* Highlight */}
-      {!isLoading && usedTickets > 0 && (
-        <div className="bg-yellow-400/5 border border-yellow-400/20 rounded-xl p-5 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-yellow-400/15 flex items-center justify-center">
-            <Film className="w-6 h-6 text-yellow-400" />
-          </div>
-          <div>
-            <p className="font-semibold text-white">
-              You've watched {usedTickets} {usedTickets === 1 ? "movie" : "movies"} with us
-            </p>
-            <p className="text-sm text-gray-400">Keep it going! 🎬</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -64,6 +64,7 @@ export const ticketsApi = createApi({
         url: `/tickets/${ticketId}/validate`,
         method: "PUT",
       }),
+      invalidatesTags: ["Tickets"],
     }),
   }),
 });

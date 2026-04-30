@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { checkTokenExpiryMiddleware } from "../middleWare/checkTokenExpiryMiddleware";
 import authSlice from "./authSlice";
-import profileSlice from "./profileSlice";
+import { profileApi } from "../services/profileApi";
 import { favoritesApi } from "../services/favoritesApi";
 import { sessionsApi } from "../services/sessionsApi";
 import { moviesApi } from "../services/moviesApi";
@@ -12,7 +12,7 @@ import { wishlistApi } from "../services/wishlistApi";
 const store = configureStore({
   reducer: {
     auth: authSlice,
-    profile: profileSlice,
+    [profileApi.reducerPath]: profileApi.reducer,
     [moviesApi.reducerPath]: moviesApi.reducer,
     [sessionsApi.reducerPath]: sessionsApi.reducer,
     [favoritesApi.reducerPath]: favoritesApi.reducer,
@@ -23,6 +23,7 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(checkTokenExpiryMiddleware)
+      .concat(profileApi.middleware)
       .concat(moviesApi.middleware)
       .concat(sessionsApi.middleware)
       .concat(favoritesApi.middleware)

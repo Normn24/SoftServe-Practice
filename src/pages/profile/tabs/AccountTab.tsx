@@ -1,36 +1,29 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Eye, EyeOff, Save, Mail, Lock, Shield } from "lucide-react";
-import { AppDispatch, RootState } from "../../../store/store";
-import { updatePassword, updatePasswordLocaly } from "../../../store/profileSlice";
+import { useGetProfileQuery, useUpdatePasswordMutation } from "../../../services/profileApi";
 import { useToastContext } from "../../../components/ToastContext/context";
 
 const AccountTab: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const { showToast } = useToastContext();
-  const user = useSelector((state: RootState) => state.profile.user);
+  const { data: user } = useGetProfileQuery();
+  const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const email = user[0]?.email ?? "";
+  const email = user?.[0]?.email ?? "";
 
   const handleUpdatePassword = async () => {
     if (!currentPassword || newPassword.length < 7) return;
-    setIsLoading(true);
     try {
-      await dispatch(updatePassword({ password: currentPassword, newPassword })).unwrap();
-      dispatch(updatePasswordLocaly({ newPassword }));
+      await updatePassword({ password: currentPassword, newPassword }).unwrap();
       setCurrentPassword("");
       setNewPassword("");
       showToast("Password updated successfully", "success");
     } catch {
       showToast("Error. Check current password.", "error");
-    } finally {
-      setIsLoading(false);
     }
   };
 
