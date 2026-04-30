@@ -10,6 +10,7 @@ import { BackdropSection } from "../components/MovieComponents/BackdropSection";
 import { MovieDetailsSection } from "../components/MovieComponents/MovieDetailsSection";
 import { TrailerSection } from "../components/MovieComponents/TrailerSection";
 import OtherMovies from "../components/MovieComponents/OtherMovies";
+import ReviewsSection from "../components/MovieComponents/ReviewsSection";
 import Loader from "../components/Loader";
 import { IoTicket } from "react-icons/io5";
 import { FaHeart, FaHome } from "react-icons/fa";
@@ -120,6 +121,7 @@ const MoviePage: React.FC = () => {
 
       {movie.videos?.length > 0 && <TrailerSection videos={movie.videos} />}
       <ActorsSection cast={movie.cast} />
+      <ReviewsSection movieId={movie.id} movieTitle={movie.title} />
       <OtherMovies movieId={movie.id} />
     </div>
   );

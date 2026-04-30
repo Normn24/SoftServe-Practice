@@ -1,4 +1,4 @@
-import { Bookmark, Clock, X, CalendarDays, Play } from "lucide-react";
+import { Bookmark, Clock, X, CalendarDays, Play, Archive } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   useGetWishlistQuery,
@@ -12,7 +12,7 @@ const getDaysUntil = (dateStr: string): number => {
 };
 
 const formatReleaseDate = (dateStr: string): string =>
-  new Date(dateStr).toLocaleDateString("uk-UA", {
+  new Date(dateStr).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -33,6 +33,7 @@ interface WishlistCardProps {
   movieId: number;
   movieTitle: string;
   releaseDate: string;
+  hasSessions: boolean;
   onRemove: (id: number) => void;
 }
 
@@ -40,19 +41,23 @@ const WishlistCard: React.FC<WishlistCardProps> = ({
   movieId,
   movieTitle,
   releaseDate,
+  hasSessions,
   onRemove,
 }) => {
   const daysLeft = getDaysUntil(releaseDate);
   const isReleased = daysLeft <= 0;
+  const isArchived = isReleased && !hasSessions;
 
   return (
-    <div className="group bg-gray-900 rounded-xl border border-gray-800 p-4 flex items-center gap-4 hover:border-yellow-400/20 transition">
-      {/* Icon */}
+    <div className={`group bg-gray-900 rounded-xl border p-4 flex items-center gap-4 transition ${
+      isArchived
+        ? "border-gray-700 opacity-80 hover:border-gray-600"
+        : "border-gray-800 hover:border-yellow-400/20"
+    }`}>
       <div className="w-10 h-10 rounded-lg bg-yellow-400/10 flex items-center justify-center shrink-0">
         <Bookmark className="w-5 h-5 text-yellow-400" />
       </div>
 
-      {/* Info */}
       <div className="flex-1 min-w-0">
         <NavLink
           to={`/movies/${movieId}`}
@@ -66,8 +71,12 @@ const WishlistCard: React.FC<WishlistCardProps> = ({
         </div>
       </div>
 
-      {/* Status badge */}
-      {isReleased ? (
+      {isArchived ? (
+        <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gray-700/60 text-gray-400 shrink-0">
+          <Archive className="w-3 h-3" />
+          Archived
+        </span>
+      ) : isReleased ? (
         <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-400/15 text-green-400 shrink-0">
           <Play className="w-3 h-3 fill-green-400" />
           Now playing
@@ -79,7 +88,6 @@ const WishlistCard: React.FC<WishlistCardProps> = ({
         </span>
       )}
 
-      {/* Remove */}
       <button
         onClick={() => onRemove(movieId)}
         className="opacity-0 group-hover:opacity-100 text-gray-600 hover:text-red-400 transition p-1 shrink-0"
@@ -108,6 +116,12 @@ const WishlistTab: React.FC = () => {
   const sorted = [...wishlist].sort((a, b) => {
     const aLeft = getDaysUntil(a.releaseDate);
     const bLeft = getDaysUntil(b.releaseDate);
+    const aArchived = aLeft <= 0 && !a.hasSessions;
+    const bArchived = bLeft <= 0 && !b.hasSessions;
+    // Архівні — завжди в кінець
+    if (aArchived && !bArchived) return 1;
+    if (!aArchived && bArchived) return -1;
+    // Серед неархівних: спочатку «вже вийшли і ще йдуть», потім — очікувані
     if (aLeft > 0 && bLeft <= 0) return -1;
     if (aLeft <= 0 && bLeft > 0) return 1;
     return aLeft - bLeft;
@@ -155,6 +169,7 @@ const WishlistTab: React.FC = () => {
               movieId={item.movieId}
               movieTitle={item.movieTitle}
               releaseDate={item.releaseDate}
+              hasSessions={item.hasSessions}
               onRemove={handleRemove}
             />
           ))}

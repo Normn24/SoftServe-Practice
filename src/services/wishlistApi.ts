@@ -6,6 +6,7 @@ export interface WishlistItem {
   movieTitle: string;
   releaseDate: string;
   addedAt: string;
+  hasSessions: boolean;
 }
 
 export interface AddToWishlistPayload {

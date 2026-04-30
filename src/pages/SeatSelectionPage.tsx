@@ -31,7 +31,6 @@ const SeatSelectionPage: React.FC = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>("login");
 
-  // Обидва запити йдуть паралельно
   const { data: movie, isLoading: movieLoading } = useGetSingleMovieQuery(
     movieId ? +movieId : skipToken
   );

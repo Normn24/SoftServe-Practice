@@ -51,6 +51,14 @@ export const ticketsApi = createApi({
       providesTags: ["Tickets"],
     }),
 
+    // Повертає всі використані квитки для конкретного movieId (без пагінації)
+    getUsedTicketsForMovie: builder.query<UserTicket[], number>({
+      query: () => `/tickets/me?page=1&limit=100&status=used`,
+      transformResponse: (res: GetTicketsResponse, _meta, movieId) =>
+        res.tickets.filter((t) => t.movieId === movieId),
+      providesTags: ["Tickets"],
+    }),
+
     deleteTicket: builder.mutation<void, string>({
       query: (ticketId) => ({
         url: `/tickets/${ticketId}`,
@@ -71,6 +79,7 @@ export const ticketsApi = createApi({
 
 export const {
   useGetUserTicketsQuery,
+  useGetUsedTicketsForMovieQuery,
   useDeleteTicketMutation,
   useValidateTicketMutation,
 } = ticketsApi;
