@@ -17,7 +17,7 @@ export const TrailerSection: FC<Props> = ({ videos }) => {
   document.body.style.overflow = isOpen ? "hidden" : "unset";
 
   return (
-    <div className="max-w-[80rem] w-full m-auto mb-14 mt-6">
+    <div className="max-w-[80rem] w-full m-auto mt-10 mb-10">
       <h2 className="text-3xl mb-6 font-bold">Film promotion</h2>
       <div className="flex gap-6">
         {videos?.map((video, idx) => (

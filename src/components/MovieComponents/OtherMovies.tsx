@@ -9,7 +9,6 @@ interface OtherMoviesProps {
 }
 
 const OtherMovies: React.FC<OtherMoviesProps> = ({ movieId }) => {
-  // Дані з кешу — мережевого запиту не буде
   const { data: movieInCinema = [] } = useGetMoviesInCinemaQuery();
   const [showTrailer, setShowTrailer] = useState(false);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
@@ -36,7 +35,7 @@ const OtherMovies: React.FC<OtherMoviesProps> = ({ movieId }) => {
   if (otherMovies.length === 0) return null;
 
   return (
-    <div className="relative h-full">
+    <div className="relative h-full mt-10 mb-10">
       <div className="max-w-[80rem] w-full mx-auto">
         <h2 className="text-3xl mb-6 font-bold">More films</h2>
         <div className="flex gap-8">

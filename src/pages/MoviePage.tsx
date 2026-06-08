@@ -121,8 +121,8 @@ const MoviePage: React.FC = () => {
 
       {movie.videos?.length > 0 && <TrailerSection videos={movie.videos} />}
       <ActorsSection cast={movie.cast} />
-      <ReviewsSection movieId={movie.id} movieTitle={movie.title} />
       <OtherMovies movieId={movie.id} />
+      <ReviewsSection movieId={movie.id} movieTitle={movie.title} />
     </div>
   );
 };

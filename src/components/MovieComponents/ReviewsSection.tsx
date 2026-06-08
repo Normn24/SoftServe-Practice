@@ -22,8 +22,6 @@ import {
   X,
 } from "lucide-react";
 
-// ─── helpers ─────────────────────────────────────────────────────────────────
-
 const CATEGORIES: { key: keyof Ratings; label: string; Icon: React.FC<{ className?: string }> }[] = [
   { key: "plot",      label: "Plot",      Icon: Film },
   { key: "acting",    label: "Acting",    Icon: Mic2 },
@@ -65,7 +63,7 @@ const RatingSlider: React.FC<RatingSliderProps> = ({ label, Icon, value, onChang
         {value}<span className="text-gray-600 font-normal">/10</span>
       </span>
     </div>
-    <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
+    <div className="relative h-2.5 bg-gray-800 rounded-full overflow-hidden">
       <div
         className="absolute inset-y-0 left-0 rounded-full transition-all duration-150"
         style={{
@@ -78,24 +76,14 @@ const RatingSlider: React.FC<RatingSliderProps> = ({ label, Icon, value, onChang
         }}
       />
     </div>
-    <input
-      type="range"
-      min={1}
-      max={10}
-      value={value}
-      onChange={(e) => onChange(Number(e.target.value))}
-      className="w-full accent-yellow-400 cursor-pointer opacity-0 absolute"
-      style={{ marginTop: "-14px", height: "14px" }}
-    />
-    {/* clickable dots row */}
     <div className="flex gap-1 mt-0.5">
       {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
         <button
           key={n}
           type="button"
           onClick={() => onChange(n)}
-          className={`flex-1 h-1.5 rounded-full transition-all ${
-            n <= value ? "bg-yellow-400" : "bg-gray-700 hover:bg-gray-600"
+          className={`flex-1 h-2 rounded-full transition-all ${
+            n <= value ? "bg-yellow-400 hover:bg-yellow-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         />
       ))}
@@ -303,7 +291,6 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ movieId, movieTitle }) 
     skip: !isAuthenticated,
   });
 
-  // квиток який ще не прив'язаний до жодного ревю
   const eligibleTicket = useMemo(() => {
     if (!usedTickets.length) return null;
     const reviewedTicketIds = new Set(reviews.map((r) => r.ticketId));
@@ -318,17 +305,17 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ movieId, movieTitle }) 
       : null;
 
   return (
-    <section className="w-[80rem] m-auto flex flex-col gap-6">
+    <section className="w-[80rem] m-auto flex flex-col gap-6 mt-10 mb-10">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-white text-3xl font-bold">
             Reviews
             {reviews.length > 0 && (
-              <span className="ml-2 text-base text-gray-500 font-normal">({reviews.length})</span>
+              <span className="ml-2 text-2xl text-gray-500 font-normal">({reviews.length})</span>
             )}
           </h2>
           {avgAll !== null && (
-            <p className="text-sm text-gray-400 mt-0.5">
+            <p className="text-base text-gray-400 mt-0.5">
               Average rating:{" "}
               <span className={`font-bold ${ratingColor(avgAll)}`}>{avgAll}/10</span>
             </p>

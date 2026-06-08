@@ -10,7 +10,7 @@ interface Props {
 
 export const ActorsSection: FC<Props> = ({ cast }) => {
   return (
-    <div className="max-w-[80rem] w-full m-auto mb-10 ">
+    <div className="max-w-[80rem] w-full m-auto mt-10 mb-10">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-white text-3xl font-bold">Film cast</h2>{" "}
         <div className="flex gap-3">
